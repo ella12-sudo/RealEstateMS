@@ -1,0 +1,1 @@
+<img src="{{ asset('images/realms-logo.png') }}" alt="RealMS Logo" {{ $attributes->merge(['style' => 'width:80px; height:auto;']) }}>
