@@ -89,35 +89,96 @@
         .main-content { margin-left: 220px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 220px); min-width: 0; }
         .topbar { background: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px; }
         .topbar h1 { font-size: 16px; color: #1a3b5c; font-weight: 600; margin: 0; }
-        .page-body { padding: 25px; }
+        .page-body { padding: 28px 25px 20px 25px; }
 
         .table-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid #e2e8f0; }
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
         table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th { padding: 10px 20px; background: #f8fafc; text-align: left; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
-        td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+        th { padding: 7px 14px; background: #f8fafc; text-align: left; font-size: 10.5px; text-transform: uppercase; color: #64748b; font-weight: 700; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
+        td { padding: 7px 14px; font-size: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; line-height: 1.4; }
 
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .status-pending { background: #fef3c7; color: #92400e; }
+        .badge { padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
+        .status-pending    { background: #fef3c7; color: #92400e; }
         .status-inprogress { background: #e0f2fe; color: #075985; }
-        .status-completed { background: #dcfce7; color: #15803d; }
+        .status-completed  { background: #dcfce7; color: #15803d; }
 
-        .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .action-bar h2 {
+            font-size: 14px;
+            color: #1e293b;
+            font-weight: 700;
+            margin: 0;
+        }
+        .btn-request {
+            background: #1a3b5c;
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
 
-        /* RESPONSIVE */
+        .pagination-wrap { padding: 10px 14px; border-top: 1px solid #f0f0f0; }
+        .pagination-wrap nav { display: flex; justify-content: flex-end; }
+        .pagination-wrap nav > div:first-child { display: none !important; }
+        .pagination-wrap nav > div:last-child {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .pagination-wrap nav > div:last-child ul,
+        .pagination-wrap nav ul {
+            display: flex !important;
+            justify-content: flex-end !important;
+            gap: 5px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+        .pagination-wrap nav ul li a,
+        .pagination-wrap nav ul li span {
+            display: inline-block;
+            padding: 5px 11px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            color: #1a3b5c;
+            text-decoration: none;
+            background: white;
+        }
+        .pagination-wrap nav ul li.active span,
+        .pagination-wrap nav ul li span[aria-current="page"] {
+            background: #1a3b5c;
+            color: white;
+            border-color: #1a3b5c;
+        }
+
         @media (max-width: 992px) {
             .menu-toggle { display: block; }
             .sidebar { transform: translateX(-100%); }
             .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; width: 100%; }
-            .page-body { padding: 18px; }
+            .page-body { padding: 15px; }
         }
 
         @media (max-width: 600px) {
             .page-body { padding: 12px; }
             .topbar { padding: 10px 14px; }
             .welcome-text { display: none; }
-            td, th { padding: 10px 12px; font-size: 12px; }
+            td, th { padding: 6px 10px; font-size: 11px; }
         }
     </style>
 </head>
@@ -167,15 +228,14 @@
 
     <div class="page-body">
         @if(session('success'))
-            <div style="background: #dcfce7; color: #15803d; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; border-left: 5px solid #22c55e;">
+            <div style="background: #dcfce7; color: #15803d; padding: 12px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 12.5px; border-left: 4px solid #22c55e;">
                 {{ session('success') }}
             </div>
         @endif
 
         <div class="action-bar">
-            <h2 style="font-size: 16px; color: #1e293b; font-weight: 700;">Maintenance History</h2>
-            <button onclick="document.getElementById('requestModal').style.display='flex'" 
-                    style="background: #1a3b5c; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap;">
+            <h2>Maintenance History</h2>
+            <button class="btn-request" onclick="document.getElementById('requestModal').style.display='flex'">
                 <i class="fas fa-plus"></i> Request Service
             </button>
         </div>
@@ -196,8 +256,8 @@
                         <tr>
                             <td style="color: #64748b; white-space: nowrap;">{{ $request->created_at->format('M d, Y') }}</td>
                             <td>
-                                <div style="font-weight: 700; color: #1a3b5c;">{{ $request->title }}</div>
-                                <div style="font-size: 12px; color: #64748b; margin-top: 2px;">{{ Str::limit($request->description, 60) }}</div>
+                                <div style="font-weight: 700; color: #1a3b5c; font-size: 12px;">{{ $request->title }}</div>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 1px;">{{ Str::limit($request->description, 60) }}</div>
                             </td>
                             <td>
                                 <span class="badge {{ 'status-' . strtolower(str_replace(' ', '', $request->status)) }}">
@@ -210,8 +270,8 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" style="text-align: center; padding: 50px; color: #94a3b8;">
-                                <i class="fa-solid fa-folder-open" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
+                            <td colspan="4" style="text-align: center; padding: 40px; color: #94a3b8;">
+                                <i class="fa-solid fa-folder-open" style="font-size: 22px; display: block; margin-bottom: 8px;"></i>
                                 No maintenance requests found.
                             </td>
                         </tr>
@@ -219,6 +279,11 @@
                     </tbody>
                 </table>
             </div>
+            @if($requests->hasPages())
+            <div class="pagination-wrap">
+                {{ $requests->links() }}
+            </div>
+            @endif
         </div>
     </div>
 </div>

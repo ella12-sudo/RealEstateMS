@@ -2,6 +2,8 @@
 
 @section('page-title', 'Tenants & Clients')
 
+@section('page-subtitle', 'View and manage active tenants and their lease details')
+
 @section('topbar-extra')
 <form method="GET" action="{{ route('tenants.index') }}" style="display:flex; align-items:center;">
     <input type="hidden" name="status" value="{{ $status }}">
@@ -69,9 +71,13 @@
     }
 
     nav[role="navigation"] > div:first-child { display: none !important; }
+
+    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
+    .pagination li a, .pagination li span { display: inline-block; padding: 5px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0; color: #1a3b5c; text-decoration: none; background: white; }
+    .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
 </style>
 
-<p class="page-subtitle">View and manage active tenants and their lease details</p>
+{{-- CHANGED: Removed <p class="page-subtitle"> — subtitle moved to topbar via @section('page-subtitle') above --}}
 
 <div class="actions-container">
     <select class="filter-dropdown" onchange="window.location.href=this.value">
@@ -143,7 +149,7 @@
         </table>
     </div>
     @if($tenants->hasPages())
-    <div style="padding: 10px 20px; border-top: 1px solid #f0f0f0;">
+    <div style="padding: 10px 20px; border-top: 1px solid #f0f0f0; display:flex; justify-content:flex-end;">
         {{ $tenants->appends(request()->query())->links() }}
     </div>
     @endif

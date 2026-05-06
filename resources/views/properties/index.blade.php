@@ -2,6 +2,8 @@
 
 @section('page-title', 'Property Listing')
 
+@section('page-subtitle', 'View and manage all listed properties')
+
 @section('topbar-extra')
 <form id="filterForm" method="GET" action="{{ route('properties.index') }}" style="display:flex; align-items:center;">
     <div class="search-wrap">
@@ -55,8 +57,8 @@
     /* Table scrolls on mobile */
     .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; min-width: 500px; }
-    th { text-align: left; padding: 8px 14px; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
-    td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; font-size: 12.5px; color: #334155; }
+    th { text-align: left; padding: 12px 16px; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
+    td { padding: 14px 16px; border-bottom: 1px solid #f5f5f5; font-size: 12.5px; color: #334155; }
     tbody tr:hover { background-color: #f8fafc; }
 
     .action-cell { display: flex; gap: 8px; justify-content: center; align-items: center; }
@@ -87,15 +89,25 @@
     .btn-save { background: #1a2e4a; color: white; padding: 8px 18px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
     .btn-cancel { background: #f1f5f9; color: #475569; padding: 8px 18px; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; }
 
+    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
     nav[role="navigation"] > div:first-child { display: none !important; }
 </style>
 
-<p class="page-subtitle">View and manage all listed properties</p>
+{{-- CHANGED: Removed <p class="page-subtitle"> — subtitle moved to topbar via @section('page-subtitle') above --}}
 
 @if(session('success'))
     <div style="background: #dcfce7; color: #15803d; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 12px; border: 1px solid #bdf0cc;">
         {{ session('success') }}
     </div>
+@endif
+
+{{-- Add Property button outside the table card, right-aligned --}}
+@if(auth()->user()->role === 'admin')
+<div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+    <button class="btn-add-top" onclick="openModal('addModal')">
+        <i class="fas fa-plus"></i> Add Property
+    </button>
+</div>
 @endif
 
 <div class="table-card">
@@ -104,11 +116,6 @@
             <h3>All Properties</h3>
             <span class="total-badge">{{ $properties->total() }} Total</span>
         </div>
-        @if(auth()->user()->role === 'admin')
-            <button class="btn-add-top" onclick="openModal('addModal')">
-                <span>+</span> Add Property
-            </button>
-        @endif
     </div>
 
     <div class="table-wrap">
@@ -160,7 +167,7 @@
             </tbody>
         </table>
     </div>
-    <div style="padding: 10px 20px; border-top: 1px solid #f0f0f0;">{{ $properties->links() }}</div>
+    <div style="padding: 10px 20px; border-top: 1px solid #f0f0f0; display:flex; justify-content:flex-end;">{{ $properties->links() }}</div>
 </div>
 
 <div class="modal-overlay" id="addModal">

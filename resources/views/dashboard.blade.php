@@ -2,6 +2,8 @@
 
 @section('page-title', 'Dashboard')
 
+@section('page-subtitle', 'Overview of properties, tenants, and revenue')
+
 @section('content')
 <style>
     .summary-grid {

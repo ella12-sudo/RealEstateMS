@@ -278,7 +278,13 @@
                 <button class="menu-toggle" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
                 </button>
-                <h1 style="font-size: 16px; color: #1a3b5c; margin: 0; font-weight: 600; white-space: nowrap;">@yield('page-title', 'Dashboard')</h1>
+                {{-- CHANGED: Wrapped title in a div so subtitle can sit right below it --}}
+                <div>
+                    <h1 style="font-size: 16px; color: #1a3b5c; margin: 0; font-weight: 600; white-space: nowrap;">@yield('page-title', 'Dashboard')</h1>
+                    @hasSection('page-subtitle')
+                        <p style="margin: 1px 0 0; font-size: 11px; color: #94a3b8; white-space: nowrap;">@yield('page-subtitle')</p>
+                    @endif
+                </div>
             </div>
 
             <div style="display: flex; align-items: center; gap: 20px;">

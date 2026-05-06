@@ -83,11 +83,13 @@ $data = [
         $tenant = Auth::user()->tenant;
         if (!$tenant) { return back()->with('error', 'Profile not found.'); }
         
-        $payments = Payment::where('tenant_id', $tenant->id)->latest()->get();
-        $totalPaid = $payments->where('status', 'Paid')->sum('amount');
-        $monthlyRent = $tenant->property->rent_per_month ?? 0;
+        $totalPaid      = Payment::where('tenant_id', $tenant->id)->where('status', 'Paid')->sum('amount');
+        $pendingBalance = Payment::where('tenant_id', $tenant->id)->where('status', 'Pending')->sum('amount');
+        $monthlyRent    = $tenant->property->rent_per_month ?? 0;
 
-        return view('tenant.payments', compact('payments', 'totalPaid', 'monthlyRent'));
+        $payments = Payment::where('tenant_id', $tenant->id)->latest()->paginate(6);
+
+        return view('tenant.payments', compact('payments', 'totalPaid', 'pendingBalance', 'monthlyRent'));
     }
 
     public function maintenance()
@@ -95,7 +97,7 @@ $data = [
         $tenant = Auth::user()->tenant;
         if (!$tenant) { return back()->with('error', 'Tenant profile not found.'); }
 
-        $requests = Maintenance::where('tenant_id', $tenant->id)->latest()->get();
+        $requests = Maintenance::where('tenant_id', $tenant->id)->latest()->paginate(6);
         return view('tenant.maintenance', compact('requests'));
     }
 

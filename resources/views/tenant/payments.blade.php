@@ -5,42 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RealMS - My Payments</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f4f7fa; display: flex; min-height: 100vh; }
 
-        .sidebar { 
-            width: 220px; 
-            background: #1a3b5c; 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            position: fixed; 
-            height: 100vh; 
-            z-index: 1000; 
+        /* ── SIDEBAR ── */
+        .sidebar {
+    width: 220px;
+            background: #1a3b5c;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
             transition: transform 0.3s ease;
         }
 
         .sidebar-logo-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            background: rgba(0,0,0,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            height: 120px;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    height: 120px;
+}
 
-        .logo-image-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px;
-        }
+.logo-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
 
         .logo-image-container img {
             width: 100%;
@@ -49,72 +50,186 @@
             object-fit: contain;
         }
 
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #cbd5e0; text-decoration: none; font-size: 13.5px; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: white; border-left: 3px solid #c9952a; }
-        .nav-item i { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
+        .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: #cbd5e0;
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: all 0.2s;
+}
+.nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border-left: 3px solid #c9952a;
+}
+.nav-item i { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
 
-        .sidebar-footer { margin-top: auto; padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .logout-btn { background: none; border: none; cursor: pointer; color: #fc8181; font-size: 13px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
+        .sidebar-footer { margin-top: auto; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .logout-btn { background: none; border: none; cursor: pointer; color: #fc8181; font-size: 12.5px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
 
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 999;
-        }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; }
         .sidebar-overlay.active { display: block; }
 
+        /* ── MAIN ── */
         .main-content { margin-left: 220px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 220px); min-width: 0; }
-        .topbar { background: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px; }
-        .topbar h1 { font-size: 16px; color: #1a3b5c; font-weight: 600; margin: 0; }
-        .page-body { padding: 25px; }
 
-        .menu-toggle { display: none; background: none; border: none; font-size: 20px; color: #1a3b5c; cursor: pointer; margin-right: 10px; }
+        .topbar {
+            background: white;
+            padding: 10px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e8edf2;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .topbar h1 { font-size: 14.5px; color: #1a3b5c; font-weight: 600; margin: 0; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 22px; }
-        .stat-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px 22px; border: 1px solid #e2e8f0; }
-        .stat-card .label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-        .stat-card .value { font-size: 22px; font-weight: 700; color: #1a2e4a; }
+        .menu-toggle { display: none; background: none; border: none; font-size: 19px; color: #1a3b5c; cursor: pointer; margin-right: 8px; }
 
-        .table-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid #e2e8f0; }
-        .table-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .table-header h3 { font-size: 15px; font-weight: 600; color: #1a2e4a; margin: 0; }
+        .page-body { padding: 20px 22px; }
+
+        /* ── STAT CARDS ── */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            padding: 14px 16px;
+            border: 1px solid #e8edf2;
+        }
+
+        .stat-card .label {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+        }
+
+        .stat-card .sub-label { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+
+        .stat-card .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2e4a;
+            line-height: 1.2;
+        }
+
+        /* ── TABLE CARD ── */
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+            border: 1px solid #e8edf2;
+        }
+
+        .table-header {
+            padding: 13px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .table-header h3 { font-size: 13.5px; font-weight: 600; color: #1a2e4a; margin: 0; }
+
+        .pay-btn {
+            background: #1a3b5c;
+            color: white;
+            border: none;
+            padding: 7px 15px;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            transition: background 0.2s;
+        }
+        .pay-btn:hover { background: #15304d; }
 
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; min-width: 450px; }
-        th { padding: 10px 20px; text-align: left; color: #94a3b8; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
-        td { padding: 13px 20px; border-bottom: 1px solid #f5f5f5; font-size: 13px; color: #334155; }
-        
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; text-transform: uppercase; }
-        .bg-success { background: #d4edda; color: #155724; }
-        .status-paid { background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .status-pending { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
 
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; z-index:2000; padding: 20px; }
-        .modal-content { background:white; padding:30px; border-radius:12px; width:100%; max-width:450px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 15px; }
-        .form-label { display:block; font-size:12px; font-weight: 600; color:#64748b; margin-bottom:5px; }
-        .form-input { width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:6px; outline: none; transition: border 0.2s; }
+        table { width: 100%; border-collapse: collapse; min-width: 420px; }
+
+        th {
+            padding: 8px 16px;
+            text-align: left;
+            color: #94a3b8;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        td {
+            padding: 11px 16px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 12.5px;
+            color: #334155;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafcff; }
+
+        .badge { padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; text-transform: uppercase; }
+        .bg-success   { background: #d4edda; color: #155724; }
+        .status-paid  { background: #d4edda; color: #155724; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
+        .status-pending { background: #fef3c7; color: #92400e; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
+
+        /* ── PAGINATION ── */
+        .pagination { display: flex; gap: 5px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
+        .pagination li a, .pagination li span { display: inline-block; padding: 4px 10px; border-radius: 5px; font-size: 11.5px; font-weight: 600; border: 1px solid #e2e8f0; color: #1a3b5c; text-decoration: none; background: white; }
+        .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
+        nav[role="navigation"] > div:first-child { display: none !important; }
+
+        /* ── MODAL ── */
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:2000; padding: 20px; }
+        .modal-content { background:white; padding:24px; border-radius:10px; width:100%; max-width:420px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-title { font-size: 15px; font-weight: 700; color: #1a3b5c; margin-bottom: 18px; }
+
+        .form-group { margin-bottom: 13px; }
+        .form-label { display:block; font-size:11.5px; font-weight: 600; color:#64748b; margin-bottom:4px; }
+        .form-input { width:100%; padding:9px 10px; border:1px solid #e2e8f0; border-radius:6px; font-size: 13px; outline: none; transition: border 0.2s; font-family: inherit; }
         .form-input:focus { border-color: #1a3b5c; }
 
-        /* RESPONSIVE */
+        .modal-note { background: #f8fafc; padding: 10px 12px; border-radius: 6px; margin-bottom: 16px; font-size: 11px; color: #64748b; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+        .btn-cancel { background:#f1f5f9; border:none; padding:8px 18px; border-radius:6px; cursor:pointer; font-weight:600; color:#475569; font-size: 12.5px; font-family: inherit; }
+        .btn-confirm { background:#1a3b5c; color:white; border:none; padding:8px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size: 12.5px; font-family: inherit; }
+        .btn-confirm:hover { background: #15304d; }
+
+        /* ── RESPONSIVE ── */
         @media (max-width: 992px) {
             .menu-toggle { display: block; }
             .sidebar { transform: translateX(-100%); }
             .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; width: 100%; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .page-body { padding: 18px; }
+            .page-body { padding: 16px; }
         }
 
         @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; gap: 10px; }
-            .page-body { padding: 12px; }
-            .topbar { padding: 10px 14px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 8px; }
+            .page-body { padding: 10px; }
+            .topbar { padding: 9px 12px; }
             .welcome-text { display: none; }
-            td, th { padding: 10px 12px; font-size: 12px; }
-            .modal-content { padding: 20px; }
+            td, th { padding: 9px 11px; font-size: 11.5px; }
+            .modal-content { padding: 18px; }
         }
     </style>
 </head>
@@ -129,7 +244,7 @@
         </div>
     </div>
 
-    <nav style="padding-top: 10px;">
+    <nav style="padding-top: 8px;">
         <a href="{{ route('tenant.dashboard') }}" class="nav-item">
             <i class="fas fa-th-large"></i> Dashboard
         </a>
@@ -159,45 +274,47 @@
             </button>
             <h1>My Payments</h1>
         </div>
-        <span style="font-size:13px; color:#718096;" class="welcome-text">Welcome, <strong style="color:#1a3b5c;">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</strong></span>
+        <span style="font-size:12.5px; color:#718096;" class="welcome-text">
+            Welcome, <strong style="color:#1a3b5c;">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</strong>
+        </span>
     </div>
 
     <div class="page-body">
+
         <div class="stats-grid">
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:8px;">
                     <div>
                         <div class="label">Total Paid</div>
-                        <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Overall collection</div>
+                        <div class="sub-label">Overall collection</div>
                     </div>
                     <div class="value" style="color:#28a745;">₱{{ number_format($totalPaid, 2) }}</div>
                 </div>
             </div>
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:8px;">
                     <div>
                         <div class="label">Pending Balance</div>
-                        <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Current dues</div>
+                        <div class="sub-label">Current dues</div>
                     </div>
-                    <div class="value" style="color:#c9952a;">₱{{ number_format($payments->where('status','Pending')->sum('amount'), 2) }}</div>
+                    <div class="value" style="color:#c9952a;">₱{{ number_format($pendingBalance, 2) }}</div>
                 </div>
             </div>
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:8px;">
                     <div>
                         <div class="label">Monthly Rent</div>
-                        <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Fixed rate</div>
+                        <div class="sub-label">Fixed rate</div>
                     </div>
                     <div class="value">₱{{ number_format($monthlyRent, 2) }}</div>
                 </div>
             </div>
         </div>
-        
+
         <div class="table-card">
             <div class="table-header">
                 <h3>Payment History</h3>
-                <button onclick="document.getElementById('paymentModal').style.display='flex'" 
-                        style="background: #1a3b5c; color: white; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                <button class="pay-btn" onclick="document.getElementById('paymentModal').style.display='flex'">
                     <i class="fas fa-credit-card"></i> Pay Now
                 </button>
             </div>
@@ -216,20 +333,16 @@
                         @foreach($payments as $payment)
                         <tr>
                             <td>{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') : ($payment->created_at ? $payment->created_at->format('M d, Y') : 'N/A') }}</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    {{ $payment->type ?? 'Rent' }}
-                                </span>
-                            </td>
-                            <td style="font-weight: 600;">₱{{ number_format($payment->amount, 2) }}</td>
+                            <td><span class="badge bg-success">{{ $payment->type ?? 'Rent' }}</span></td>
+                            <td style="font-weight:600;">₱{{ number_format($payment->amount, 2) }}</td>
                             <td>
                                 <span class="{{ $payment->status === 'Paid' ? 'status-paid' : 'status-pending' }}">
                                     {{ $payment->status }}
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('tenant.payments.receipt', $payment->id) }}" style="color: #1a3b5c; text-decoration: none; font-size: 12px; font-weight: 600;">
-                                    <i class="fas fa-file-invoice" style="margin-right: 4px;"></i> Receipt
+                                <a href="{{ route('tenant.payments.receipt', $payment->id) }}" style="color:#1a3b5c; text-decoration:none; font-size:12px; font-weight:600;">
+                                    <i class="fas fa-file-invoice" style="margin-right:4px;"></i> Receipt
                                 </a>
                             </td>
                         </tr>
@@ -237,13 +350,20 @@
                     </tbody>
                 </table>
             </div>
+            @if($payments->hasPages())
+            <div style="padding: 10px 18px; border-top: 1px solid #f0f0f0;">
+                {{ $payments->links() }}
+            </div>
+            @endif
         </div>
+
     </div>
 </div>
 
+<!-- Payment Modal -->
 <div id="paymentModal" class="modal">
     <div class="modal-content">
-        <h3 style="margin-bottom: 20px; color: #1a3b5c; font-size: 18px;">Make a Payment</h3>
+        <div class="modal-title">Make a Payment</div>
         <form action="{{ route('tenant.payments.store') }}" method="POST">
             @csrf
             <div class="form-group">
@@ -258,16 +378,12 @@
                     <option value="Online Banking">Online Banking</option>
                 </select>
             </div>
-            <div style="background: #f8fafc; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
-                <p style="font-size: 11px; color: #64748b; line-height: 1.5;">
-                    <i class="fas fa-info-circle"></i> Note: Please ensure you have completed the transaction via your chosen method before clicking confirm.
-                </p>
+            <div class="modal-note">
+                <i class="fas fa-info-circle"></i> Please ensure you have completed the transaction via your chosen method before clicking confirm.
             </div>
-            <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                <button type="button" onclick="document.getElementById('paymentModal').style.display='none'" 
-                        style="background:#f1f5f9; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:600; color:#475569;">Cancel</button>
-                <button type="submit" 
-                        style="background:#1a3b5c; color:white; border:none; padding:10px 25px; border-radius:6px; cursor:pointer; font-weight:600;">Confirm Payment</button>
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="document.getElementById('paymentModal').style.display='none'">Cancel</button>
+                <button type="submit" class="btn-confirm">Confirm Payment</button>
             </div>
         </form>
     </div>
@@ -280,12 +396,10 @@
         sidebar.classList.toggle('active');
         overlay.classList.toggle('active');
     }
-    
+
     window.onclick = function(event) {
         let modal = document.getElementById('paymentModal');
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+        if (event.target == modal) modal.style.display = "none";
     }
 
     document.addEventListener('click', function(event) {

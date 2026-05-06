@@ -5,109 +5,211 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RealMS - Tenant Dashboard</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f4f7fa; display: flex; min-height: 100vh; width: 100%; overflow-x: hidden; }
 
-        .sidebar { 
-            width: 220px; 
-            background: #1a3b5c; 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            position: fixed; 
-            height: 100vh; 
-            z-index: 1000; 
+        /* ── SIDEBAR ── */
+        .sidebar {
+    width: 220px;
+            background: #1a3b5c;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 1000;
             transition: transform 0.3s ease;
         }
-        
-        .sidebar-logo-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0; 
-            background: rgba(0,0,0,0.1) !important;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            height: 120px; 
-        }
 
-        .logo-image-container {
-            width: 100%; 
-            height: 100%; 
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 5px; 
-        }
+        .sidebar-logo-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    height: 120px;
+}
+
+.logo-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
 
         .logo-image-container img {
-            width: 100%; 
-            height: 100%; 
+            width: 100%;
+            height: 100%;
             max-width: none;
-            object-fit: contain; 
+            object-fit: contain;
         }
 
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: #cbd5e0; text-decoration: none; font-size: 13.5px; transition: all 0.2s; }
-        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.08); color: white; border-left: 3px solid #c9952a; }
-        .nav-item i { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
+        .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: #cbd5e0;
+    text-decoration: none;
+    font-size: 13.5px;
+    transition: all 0.2s;
+}
+.nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    border-left: 3px solid #c9952a;
+}
+.nav-item i { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
 
-        .sidebar-footer { margin-top: auto; padding: 15px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .logout-btn { background: none; border: none; cursor: pointer; color: #fc8181; font-size: 13px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
+        .sidebar-footer { margin-top: auto; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
+        .logout-btn { background: none; border: none; cursor: pointer; color: #fc8181; font-size: 12.5px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
 
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 999;
-        }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; }
         .sidebar-overlay.active { display: block; }
 
+        /* ── MAIN ── */
         .main-content { margin-left: 220px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 220px); min-width: 0; }
-        .topbar { background: white; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 10px; }
-        .topbar h1 { font-size: 16px; color: #1a3b5c; font-weight: 600; margin: 0; }
-        .page-body { padding: 25px; }
 
-        .menu-toggle { display: none; background: none; border: none; font-size: 20px; color: #1a3b5c; cursor: pointer; margin-right: 10px; }
+        .topbar {
+            background: white;
+            padding: 10px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e8edf2;
+            flex-wrap: wrap;
+            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .topbar h1 { font-size: 14.5px; color: #1a3b5c; font-weight: 600; margin: 0; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 22px; }
-        .stat-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 20px 22px; border: 1px solid #e2e8f0; }
-        .stat-card .label { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-        .stat-card .value { font-size: 22px; font-weight: 700; color: #1a2e4a; }
+        .menu-toggle { display: none; background: none; border: none; font-size: 19px; color: #1a3b5c; cursor: pointer; margin-right: 8px; }
 
-        .table-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid #e2e8f0; }
+        .page-body { padding: 20px 22px; }
+
+        /* ── STAT CARDS ── */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+
+        .stat-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    padding: 10px 16px;
+    border: 1px solid #e8edf2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 0;
+    height: 56px;
+}
+
+        .stat-card .label {
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .sub-label {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .stat-card .value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2e4a;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .stat-card .value-sm {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a2e4a;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ── TABLE CARD ── */
+        .table-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+            border: 1px solid #e8edf2;
+        }
+
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .table-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; flex-wrap: wrap; gap: 10px; }
-        .table-header h3 { font-size: 15px; font-weight: 600; color: #1a2e4a; margin: 0; }
 
-        table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th { padding: 10px 20px; text-align: left; color: #94a3b8; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
-        td { padding: 13px 20px; border-bottom: 1px solid #f5f5f5; font-size: 13px; color: #334155; }
-        
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; }
-        .badge-green { background: #d4edda; color: #155724; }
+        .table-header {
+            padding: 13px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .table-header h3 { font-size: 13.5px; font-weight: 600; color: #1a2e4a; margin: 0; }
+        .table-header a { color: #c9952a; font-size: 12px; text-decoration: none; font-weight: 600; }
+
+        table { width: 100%; border-collapse: collapse; min-width: 380px; }
+
+        th {
+            padding: 8px 16px;
+            text-align: left;
+            color: #94a3b8;
+            font-size: 10.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        td {
+            padding: 11px 16px;
+            border-bottom: 1px solid #f5f5f5;
+            font-size: 12.5px;
+            color: #334155;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #fafcff; }
+
+        .badge { padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
+        .badge-green  { background: #d4edda; color: #155724; }
         .badge-yellow { background: #fff3cd; color: #856404; }
-        .badge-red { background: #f8d7da; color: #721c24; }
+        .badge-red    { background: #f8d7da; color: #721c24; }
 
-        /* RESPONSIVE */
+        /* ── RESPONSIVE ── */
         @media (max-width: 992px) {
             .menu-toggle { display: block; }
             .sidebar { transform: translateX(-100%); }
             .sidebar.active { transform: translateX(0); }
             .main-content { margin-left: 0; width: 100%; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .page-body { padding: 18px; }
+            .page-body { padding: 16px; }
         }
 
         @media (max-width: 600px) {
-            .stats-grid { grid-template-columns: 1fr; gap: 10px; }
-            .page-body { padding: 12px; }
-            .topbar { padding: 10px 14px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 8px; }
+            .page-body { padding: 10px; }
+            .topbar { padding: 9px 12px; }
             .welcome-text { display: none; }
-            td, th { padding: 10px 12px; font-size: 12px; }
+            td, th { padding: 9px 11px; font-size: 11.5px; }
         }
     </style>
 </head>
@@ -121,18 +223,19 @@
             <img src="{{ asset('images/realms-logo-removebg-preview.png') }}" alt="RealMS Logo">
         </div>
     </div>
-    
-    <nav style="padding-top: 10px;">
+
+    <nav style="padding-top: 8px;">
         <a href="{{ route('tenant.dashboard') }}" class="nav-item {{ request()->routeIs('tenant.dashboard') ? 'active' : '' }}">
             <i class="fas fa-th-large"></i> Dashboard
         </a>
-        <a href="{{ route('tenant.payments') }}" class="nav-item">
+        <a href="{{ route('tenant.payments') }}" class="nav-item {{ request()->routeIs('tenant.payments') ? 'active' : '' }}">
             <i class="fas fa-file-invoice-dollar"></i> My Payments
         </a>
-        <a href="{{ route('tenant.maintenance') }}" class="nav-item">
+        <a href="{{ route('tenant.maintenance') }}" class="nav-item {{ request()->routeIs('tenant.maintenance') ? 'active' : '' }}">
             <i class="fas fa-tools"></i> Maintenance
         </a>
     </nav>
+
     <div class="sidebar-footer">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
@@ -151,43 +254,47 @@
             </button>
             <h1>My Dashboard</h1>
         </div>
-        <span style="font-size:13px; color:#718096;" class="welcome-text">Welcome, <strong style="color:#1a3b5c;">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</strong></span>
+        <span style="font-size:12.5px; color:#718096;" class="welcome-text">
+            Welcome, <strong style="color:#1a3b5c;">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</strong>
+        </span>
     </div>
+
     <div class="page-body">
 
         <div class="stats-grid">
+            <!-- My Property -->
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                    <div>
-                        <div class="label">My Property</div>
-                        <div style="font-size:12px; color:#94a3b8; margin-top:2px;">{{ $tenant->property->location ?? 'N/A' }}</div>
-                    </div>
-                    <div class="value" style="font-size:15px; text-align:right;">{{ $tenant->property->name ?? 'N/A' }}</div>
+                <div>
+                    <div class="label">My Property</div>
+                    <div class="sub-label">{{ $tenant->property->location ?? 'N/A' }}</div>
                 </div>
+                <div class="value-sm">{{ $tenant->property->name ?? 'N/A' }}</div>
             </div>
+
+            <!-- Monthly Rent -->
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                    <div>
-                        <div class="label">Monthly Rent</div>
-                        <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Due every 1st</div>
-                    </div>
-                    <div class="value">₱{{ number_format($tenant->property->rent_per_month ?? 0, 2) }}</div>
+                <div>
+                    <div class="label">Monthly Rent</div>
+                    <div class="sub-label">Due every 1st</div>
                 </div>
+                <div class="value">₱{{ number_format($tenant->property->rent_per_month ?? 0, 2) }}</div>
             </div>
+
+            <!-- Lease Status -->
             <div class="stat-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                <div>
                     <div class="label">Lease Status</div>
-                    <span class="badge {{ ($tenant->status ?? 'Active') == 'Active' ? 'badge-green' : 'badge-red' }}">
-                        {{ $tenant->status ?? 'Active' }}
-                    </span>
                 </div>
+                <span class="badge {{ ($tenant->status ?? 'Active') == 'Active' ? 'badge-green' : 'badge-red' }}">
+                    {{ $tenant->status ?? 'Active' }}
+                </span>
             </div>
         </div>
 
         <div class="table-card">
             <div class="table-header">
                 <h3>My Recent Payments</h3>
-                <a href="{{ route('tenant.payments') }}" style="color:#c9952a; font-size:13px; text-decoration:none; font-weight:600;">View All</a>
+                <a href="{{ route('tenant.payments') }}">View All</a>
             </div>
             <div class="table-responsive">
                 <table>
@@ -204,11 +311,15 @@
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($payment->due_date)->format('M d, Y') }}</td>
                             <td style="font-weight:600;">₱{{ number_format($payment->amount, 2) }}</td>
-                            <td>{{ $payment->paid_at ? \Carbon\Carbon::parse($payment->paid_at)->format('M d, Y') : 'Apr 19, 2026' }}</td>
+                            <td>{{ $payment->paid_at ? \Carbon\Carbon::parse($payment->paid_at)->format('M d, Y') : '—' }}</td>
                             <td><span class="badge badge-green">Paid</span></td>
                         </tr>
                         @empty
-                        <tr><td colspan="4" style="text-align:center; padding:40px; color:#94a3b8;">No recent payments found.</td></tr>
+                        <tr>
+                            <td colspan="4" style="text-align:center; padding:32px; color:#94a3b8; font-size:12.5px;">
+                                No recent payments found.
+                            </td>
+                        </tr>
                         @endforelse
                     </tbody>
                 </table>

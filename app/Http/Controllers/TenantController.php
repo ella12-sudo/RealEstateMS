@@ -130,4 +130,32 @@ class TenantController extends Controller
         return redirect()->route('tenants.index')
                          ->with('success', 'Tenant removed successfully!');
     }
+
+    // Tenant: My Payments page
+    public function payments()
+    {
+        $tenant = auth()->user()->tenant;
+
+        $totalPaid      = $tenant->payments()->where('status', 'Paid')->sum('amount');
+        $pendingBalance = $tenant->payments()->where('status', 'Pending')->sum('amount');
+        $monthlyRent    = $tenant->property->monthly_rent ?? 0;
+
+        $payments = $tenant->payments()
+                           ->orderBy('created_at', 'desc')
+                           ->paginate(6);
+
+        return view('tenant.payments', compact('payments', 'totalPaid', 'pendingBalance', 'monthlyRent'));
+    }
+
+    // Tenant: My Maintenance page
+    public function maintenance()
+    {
+        $tenant = auth()->user()->tenant;
+
+        $requests = $tenant->maintenanceRequests()
+                           ->orderBy('created_at', 'desc')
+                           ->paginate(6);
+
+        return view('tenant.maintenance', compact('requests'));
+    }
 }

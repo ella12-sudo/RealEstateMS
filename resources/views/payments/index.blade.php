@@ -2,6 +2,8 @@
 
 @section('page-title', 'Payments & Billing')
 
+@section('page-subtitle', 'Monitor collected payments, pending and overdue balances')
+
 @section('content')
 <style>
     .page-subtitle { font-size: 13px; color: #64748b; margin-bottom: 20px; margin-top: -10px; }
@@ -70,13 +72,13 @@
     .modal-form-group input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
     .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 
-    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: center; flex-wrap: wrap; }
+    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
     .pagination li a, .pagination li span { display: inline-block; padding: 5px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0; color: #1a3b5c; text-decoration: none; background: white; }
     .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
     nav[role="navigation"] > div:first-child { display: none !important; }
 </style>
 
-<p class="page-subtitle">Monitor collected payments, pending and overdue balances</p>
+{{-- CHANGED: Removed <p class="page-subtitle"> — subtitle moved to topbar via @section('page-subtitle') above --}}
 
 <div class="summary-grid">
     <div class="summary-card green">
@@ -164,11 +166,11 @@
                 </tbody>
             </table>
         </div>
-        @if($payments->hasPages())
-        <div style="padding: 12px 14px; border-top: 1px solid #f0f0f0;">
-            {{ $payments->links() }}
-        </div>
-        @endif
+       @if($payments->hasPages())
+<div style="padding: 12px 14px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end;">
+    {{ $payments->links() }}
+</div>
+@endif
     </div>
 </div>
 

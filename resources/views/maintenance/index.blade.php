@@ -2,6 +2,8 @@
 
 @section('page-title', 'Maintenance')
 
+@section('page-subtitle', 'Update task status and record repair expenses automatically.')
+
 @section('content')
 <style>
     .page-subtitle { font-size: 12px; color: #64748b; margin-bottom: 16px; margin-top: -10px; }
@@ -10,16 +12,16 @@
     .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
     table { width: 100%; border-collapse: collapse; min-width: 500px; }
-    th { padding: 8px 14px; text-align: left; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; background: #fafafa; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
-    td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; font-size: 12.5px; color: #334155; vertical-align: middle; }
+    th { padding: 6px 14px; text-align: left; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; background: #fafafa; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
+    td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; font-size: 12.5px; color: #334155; vertical-align: middle; line-height: 1; }
 
     /* Column widths */
     th:nth-child(1), td:nth-child(1) { width: 90px; }
-    th:nth-child(2), td:nth-child(2) { width: 280px; max-width: 280px; }
+    th:nth-child(2), td:nth-child(2) { width: 220px; max-width: 220px; overflow: hidden; }
     th:nth-child(3), td:nth-child(3) { width: 110px; }
     th:nth-child(4), td:nth-child(4) { width: 120px; }
     th:nth-child(5), td:nth-child(5) { width: 120px; }
-    th:nth-child(6), td:nth-child(6) { width: 80px; padding-right: 20px; }
+    th:nth-child(6), td:nth-child(6) { width: 80px; text-align: center !important; padding-right: 0; }
 
     .priority-badge { padding: 2px 8px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
     .p-Emergency { background: #fee2e2; color: #b91c1c; }
@@ -41,10 +43,8 @@
     .status-Completed { background: #dcfce7; color: #15803d; }
 
     /* FIX 2: Single-line title with ellipsis */
-    .issue-title { font-weight: 600; color: #1a2e4a; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
-    /* FIX 3: Single-line description with ellipsis */
-    .issue-desc  { font-size: 11px; color: #94a3b8; margin-top: 2px; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
+    .issue-title { font-weight: 600; color: #1a2e4a; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; line-height: 1.2; }
+    .issue-desc  { font-size: 11px; color: #94a3b8; margin-top: 1px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
     .tab-container { display: flex; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
     .tabs { display: flex; background: #f1f5f9; padding: 3px; border-radius: 8px; gap: 2px; }
     .tab-link { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #64748b; transition: 0.2s; white-space: nowrap; }
@@ -56,7 +56,7 @@
         table { min-width: 360px; }
     }
 
-    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: center; flex-wrap: wrap; }
+    .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
     .pagination li a, .pagination li span { display: inline-block; padding: 5px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0; color: #1a3b5c; text-decoration: none; background: white; }
     .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
     nav[role="navigation"] > div:first-child { display: none !important; }
@@ -111,25 +111,25 @@
     .btn-confirm:hover { background: #243d5e; }
 </style>
 
-<p class="page-subtitle">Update task status and record repair expenses automatically.</p>
-
 @if(session('success'))
     <div style="background: #dcfce7; color: #15803d; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 12px; border: 1px solid #bdf0cc;">
         <i class="fas fa-check-circle"></i> {{ session('success') }}
     </div>
 @endif
 
-<div class="tab-container">
-    <div class="tabs">
-        <a href="{{ route('maintenance.index', ['tab' => 'active']) }}"
-           class="tab-link {{ $tab === 'active' ? 'active' : '' }}">
-            <i class="fas fa-tools" style="margin-right: 4px;"></i> Active
-        </a>
+{{-- Simple archived toggle --}}
+<div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
+    @if($tab === 'active')
         <a href="{{ route('maintenance.index', ['tab' => 'archived']) }}"
-           class="tab-link archived-tab {{ $tab === 'archived' ? 'active' : '' }}">
-            <i class="fas fa-archive" style="margin-right: 4px;"></i> Archived
+           style="font-size:12px; font-weight:600; color:#c9952a; text-decoration:none; display:flex; align-items:center; gap:5px; background:#fff8ed; border:1px solid #f0d9a8; padding:5px 12px; border-radius:7px;">
+            <i class="fas fa-archive"></i> View Archived
         </a>
-    </div>
+    @else
+        <a href="{{ route('maintenance.index', ['tab' => 'active']) }}"
+           style="font-size:12px; font-weight:600; color:#1a3b5c; text-decoration:none; display:flex; align-items:center; gap:5px; background:#f0f5ff; border:1px solid #c7d7ee; padding:5px 12px; border-radius:7px;">
+            <i class="fas fa-tools"></i> View Active
+        </a>
+    @endif
 </div>
 
 <div class="table-card">
@@ -142,7 +142,7 @@
                     <th>Tenant</th>
                     <th>Status</th>
                     <th class="col-hide">Date</th>
-                    <th style="text-align:right;">Actions</th>
+                    <th style="text-align:center;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -178,21 +178,14 @@
                         @endif
                     </td>
                     <td class="col-hide" style="color:#64748b; white-space:nowrap;">{{ $req->created_at->format('M d, Y') }}</td>
-                    <td style="text-align:right;">
-                        <div style="display:flex; justify-content:flex-end; gap:5px; align-items:center;">
+                    <td style="text-align:center;">
+    <div style="display:flex; justify-content:center; gap:5px; align-items:center;">
                             @if($tab === 'active')
-                                @if($req->status === 'Completed')
-                                    <form action="{{ route('maintenance.archive', $req->id) }}" method="POST" onsubmit="return confirm('Archive this?')">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" style="background:none; border:none; color:#c9952a; cursor:pointer; font-size:13px;" title="Archive">
-                                            <i class="fas fa-archive"></i>
-                                        </button>
-                                    </form>
-                                @endif
-                                <form action="{{ route('maintenance.destroy', $req->id) }}" method="POST" onsubmit="return confirm('Delete this record?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px;" title="Delete">
-                                        <i class="fas fa-trash"></i>
+                                {{-- CHANGED: Removed delete button. Archive button now shows for ALL active items. --}}
+                                <form action="{{ route('maintenance.archive', $req->id) }}" method="POST" onsubmit="return confirm('Archive this maintenance request?')">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" style="background:none; border:none; color:#c9952a; cursor:pointer; font-size:13px;" title="Archive">
+                                        <i class="fas fa-archive"></i>
                                     </button>
                                 </form>
                             @else
@@ -222,11 +215,11 @@
             </tbody>
         </table>
     </div>
-    @if($requests->hasPages())
-    <div style="padding: 10px 14px; border-top: 1px solid #f0f0f0;">
-        {{ $requests->links() }}
-    </div>
-    @endif
+   @if($requests->hasPages())
+<div style="padding: 10px 14px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end;">
+    {{ $requests->links() }}
+</div>
+@endif
 </div>
 
 <!-- ===== COMPLETION MODAL ===== -->
