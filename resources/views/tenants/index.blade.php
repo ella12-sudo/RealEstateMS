@@ -50,8 +50,8 @@
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background-color: #f8fafc; }
 
-    .badge-active  { background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-    .badge-expired { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+   .badge-active  { color: #15803d; font-size: 10px; font-weight: 700; white-space: nowrap; }
+.badge-expired { color: #991b1b; font-size: 10px; font-weight: 700; white-space: nowrap; }
 
     .lease-expiring { color: #991b1b; font-weight: 600; font-size: 12px; }
     .lease-soon     { color: #854d0e; font-weight: 600; font-size: 12px; }

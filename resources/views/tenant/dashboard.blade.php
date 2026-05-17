@@ -189,10 +189,10 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fafcff; }
 
-        .badge { padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
-        .badge-green  { background: #d4edda; color: #155724; }
-        .badge-yellow { background: #fff3cd; color: #856404; }
-        .badge-red    { background: #f8d7da; color: #721c24; }
+        .badge { font-size: 10.5px; font-weight: 700; display: inline-block; }
+.badge-green  { color: #155724; }
+.badge-yellow { color: #856404; }
+.badge-red    { color: #721c24; }
 
         /* ── RESPONSIVE ── */
         @media (max-width: 992px) {

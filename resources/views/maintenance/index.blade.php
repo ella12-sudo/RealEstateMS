@@ -23,24 +23,24 @@
     th:nth-child(5), td:nth-child(5) { width: 120px; }
     th:nth-child(6), td:nth-child(6) { width: 80px; text-align: center !important; padding-right: 0; }
 
-    .priority-badge { padding: 2px 8px; border-radius: 50px; font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
-    .p-Emergency { background: #fee2e2; color: #b91c1c; }
-    .p-High { background: #ffedd5; color: #9a3412; }
-    .p-Medium { background: #f0f9ff; color: #075985; }
-    .p-Low { background: #f1f5f9; color: #475569; }
+    .priority-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
+.p-Emergency { color: #b91c1c; }
+.p-High { color: #9a3412; }
+.p-Medium { color: #075985; }
+.p-Low { color: #475569; }
 
     .cost-box { margin-top: 5px; display: flex; gap: 4px; align-items: center; }
     .cost-input { border: 1px solid #c9952a; border-radius: 4px; padding: 3px; width: 70px; font-size: 11px; outline: none; }
     .btn-save { background: #1a2e4a; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
 
     .status-select {
-        font-size: 10px; padding: 2px 8px; border-radius: 50px; font-weight: 700;
-        cursor: pointer; border: none; outline: none; appearance: none;
-        -webkit-appearance: none; text-align: center; height: 22px;
-    }
-    .status-Pending { background: #fef3c7; color: #92400e; }
-    .status-InProgress { background: #e0f2fe; color: #075985; }
-    .status-Completed { background: #dcfce7; color: #15803d; }
+    font-size: 10px; padding: 2px 4px; font-weight: 700;
+    cursor: pointer; border: none; outline: none;
+    text-align: center; height: 22px; background: transparent;
+}
+.status-Pending { color: #92400e; }
+.status-InProgress { color: #075985; }
+.status-Completed { color: #15803d; }
 
     /* FIX 2: Single-line title with ellipsis */
     .issue-title { font-weight: 600; color: #1a2e4a; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; line-height: 1.2; }

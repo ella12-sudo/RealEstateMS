@@ -32,7 +32,7 @@
         cursor: pointer;
     }
     .summary-card h3 {
-        color: #94a3b8; 
+        color: #94a3b8;
         font-size: 10px;
         margin: 0;
         font-weight: 700;
@@ -40,7 +40,7 @@
         letter-spacing: 0.05em;
     }
     .summary-card .value {
-        font-size: 20px; 
+        font-size: 20px;
         font-weight: 700;
         word-break: break-word;
         text-align: right;
@@ -58,7 +58,6 @@
     .value-dark   { color: #1a3b5c; }
     .value-red    { color: #dc2626; }
 
-    /* Dashboard two-column layout */
     .dashboard-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -99,14 +98,42 @@
     }
     .styled-table td { padding: 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
     .styled-table tbody tr:last-child td { border-bottom: none; }
-    .status-badge { padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: 600; text-transform: uppercase; white-space: nowrap; }
-    .status-paid    { background: #dcfce7; color: #166534; }
-    .status-pending { background: #fee2e2; color: #991b1b; }
+
+    /* Flat text status — no bubble */
+    .status-badge   { font-size: 10px; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
+    .status-paid    { color: #16a34a; }
+    .status-pending { color: #dc2626; }
+
     .empty-state { text-align: center; color: #94a3b8; padding: 30px 0; font-size: 13px; }
     .view-all-link { font-size: 11px; color: #c9952a; text-decoration: none; font-weight: 600; white-space: nowrap; }
     .view-all-link:hover { text-decoration: underline; }
 
-    /* Hide property column on small screens */
+    /* Pagination */
+    .pagination-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .pagination-info { font-size: 11px; color: #94a3b8; }
+    .pagination-btns { display: flex; gap: 4px; }
+    .page-btn {
+        padding: 4px 9px;
+        font-size: 11px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        border: 1px solid #e2e8f0;
+        background: white;
+        color: #1a3b5c;
+        transition: all 0.15s ease;
+    }
+    .page-btn:hover:not(:disabled) { background: #f1f5f9; }
+    .page-btn.active { background: #1a3b5c; color: white; border-color: #1a3b5c; }
+    .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
     @media (max-width: 600px) {
         .col-hide-mobile { display: none; }
         .detail-box { padding: 14px; }
@@ -212,9 +239,9 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($maintenanceRequests as $request)
-                <tr>
+            <tbody id="maintenanceTableBody">
+                @foreach($maintenanceRequests as $index => $request)
+                <tr class="maintenance-row" data-index="{{ $index }}">
                     <td>
                         <div style="font-weight: 600; color: #1e293b; font-size: 12px;">
                             {{ $request->tenant->user->first_name ?? '' }} {{ $request->tenant->user->last_name ?? '' }}
@@ -231,6 +258,16 @@
             </tbody>
         </table>
     </div>
+
+    <div class="pagination-wrap" id="maintenancePagination">
+        <span class="pagination-info" id="paginationInfo"></span>
+        <div class="pagination-btns">
+            <button class="page-btn" id="prevPage" onclick="changePage(-1)">← Prev</button>
+            <div id="pageNumbers" style="display:flex; gap:4px;"></div>
+            <button class="page-btn" id="nextPage" onclick="changePage(1)">Next →</button>
+        </div>
+    </div>
+
     @else
     <div class="empty-state">
         <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" style="width: 40px; opacity: 0.2; margin-bottom: 10px;">
@@ -241,7 +278,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+
         @if(Auth::user()->role === 'admin')
         const ctx = document.getElementById('revenueChart').getContext('2d');
         new Chart(ctx, {
@@ -272,6 +310,55 @@
             }
         });
         @endif
+
+        // ── Maintenance Requests Pagination ──
+        const ROWS_PER_PAGE = 5;
+        let currentPage = 1;
+        const rows = document.querySelectorAll('.maintenance-row');
+        const totalRows = rows.length;
+        const totalPages = Math.ceil(totalRows / ROWS_PER_PAGE);
+
+        function renderPage(page) {
+            const start = (page - 1) * ROWS_PER_PAGE;
+            const end   = start + ROWS_PER_PAGE;
+
+            rows.forEach((row, i) => {
+                row.style.display = (i >= start && i < end) ? '' : 'none';
+            });
+
+            // Info text
+            document.getElementById('paginationInfo').textContent =
+                `Showing ${start + 1}–${Math.min(end, totalRows)} of ${totalRows} requests`;
+
+            // Prev / Next
+            document.getElementById('prevPage').disabled = page === 1;
+            document.getElementById('nextPage').disabled = page === totalPages;
+
+            // Numbered buttons
+            const container = document.getElementById('pageNumbers');
+            container.innerHTML = '';
+            for (let p = 1; p <= totalPages; p++) {
+                const btn = document.createElement('button');
+                btn.textContent = p;
+                btn.className = 'page-btn' + (p === page ? ' active' : '');
+                btn.onclick = () => { currentPage = p; renderPage(p); };
+                container.appendChild(btn);
+            }
+
+            // Hide pagination if only one page
+            document.getElementById('maintenancePagination').style.display =
+                totalPages <= 1 ? 'none' : 'flex';
+        }
+
+        window.changePage = function (dir) {
+            const next = currentPage + dir;
+            if (next >= 1 && next <= totalPages) {
+                currentPage = next;
+                renderPage(currentPage);
+            }
+        };
+
+        if (totalRows > 0) renderPage(currentPage);
     });
 </script>
 @endsection

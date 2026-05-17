@@ -52,9 +52,9 @@
     td { padding: 9px 10px; border-bottom: 1px solid #f5f5f5; font-size: 12px; color: #334155; }
     tbody tr:hover { background-color: #f8fafc; }
 
-    .badge { padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; display: inline-block; white-space: nowrap; }
-    .bg-rent { background: #dcfce7; color: #15803d; }
-    .bg-maint { background: #fee2e2; color: #b91c1c; }
+    .badge { font-size: 10px; font-weight: 700; display: inline-block; white-space: nowrap; }
+.bg-rent { color: #15803d; }
+.bg-maint { color: #b91c1c; }
 
     .btn-view-receipt { color: #1a2e4a; background: #f1f5f9; padding: 4px 7px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
     .btn-approve { color: #15803d; background: #dcfce7; padding: 4px 7px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; }
@@ -138,7 +138,7 @@
                             {{ ($payment->type ?? 'Rent') == 'Maintenance' ? '-' : '+' }} ₱{{ number_format($payment->amount, 2) }}
                         </td>
                         <td>
-                            <span class="badge" style="background:#f1f5f9; color:#475569;">{{ $payment->status }}</span>
+                            <span class="badge" style="color:#475569;">{{ $payment->status }}</span>
                         </td>
                         <td style="text-align: right;">
                             <div style="display: flex; justify-content: flex-end; gap: 4px; align-items: center;">

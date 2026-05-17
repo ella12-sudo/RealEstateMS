@@ -186,10 +186,10 @@
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fafcff; }
 
-        .badge { padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; text-transform: uppercase; }
-        .bg-success   { background: #d4edda; color: #155724; }
-        .status-paid  { background: #d4edda; color: #155724; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
-        .status-pending { background: #fef3c7; color: #92400e; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
+        .badge { font-size: 10.5px; font-weight: 700; display: inline-block; text-transform: uppercase; }
+.bg-success     { color: #155724; }
+.status-paid    { color: #155724; font-size: 10.5px; font-weight: 700; display: inline-block; }
+.status-pending { color: #92400e; font-size: 10.5px; font-weight: 700; display: inline-block; }; font-size: 10.5px; font-weight: 600; display: inline-block; 
 
         /* ── PAGINATION ── */
         .pagination { display: flex; gap: 5px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }

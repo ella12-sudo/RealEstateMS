@@ -98,10 +98,10 @@
         th { padding: 7px 14px; background: #f8fafc; text-align: left; font-size: 10.5px; text-transform: uppercase; color: #64748b; font-weight: 700; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
         td { padding: 7px 14px; font-size: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; line-height: 1.4; }
 
-        .badge { padding: 2px 8px; border-radius: 20px; font-size: 10.5px; font-weight: 600; display: inline-block; }
-        .status-pending    { background: #fef3c7; color: #92400e; }
-        .status-inprogress { background: #e0f2fe; color: #075985; }
-        .status-completed  { background: #dcfce7; color: #15803d; }
+       .badge { font-size: 10.5px; font-weight: 700; display: inline-block; }
+.status-pending    { color: #92400e; }
+.status-inprogress { color: #075985; }
+.status-completed  { color: #15803d; }
 
         .action-bar {
             display: flex;

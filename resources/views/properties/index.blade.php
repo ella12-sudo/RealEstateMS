@@ -54,7 +54,6 @@
     .table-header h3 { font-size: 14px; font-weight: 700; color: #1a2e4a; margin: 0; }
     .total-badge { background: #f4f6f9; color: #64748b; padding: 2px 8px; border-radius: 20px; font-size: 11px; margin-left: 8px; }
 
-    /* Table scrolls on mobile */
     .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { width: 100%; border-collapse: collapse; min-width: 500px; }
     th { text-align: left; padding: 12px 16px; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 1px solid #f0f0f0; background: #fafafa; }
@@ -68,12 +67,12 @@
     .icon-delete { color: #dc3545 !important; }
     .icon-btn:hover { background: #f1f5f9; opacity: 0.8; }
 
-    .badge { padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; display: inline-block; }
-    .badge-occupied { background: #e0f2fe; color: #0369a1; }
-    .badge-available { background: #dcfce7; color: #15803d; }
-    .badge-maintenance { background: #fff3cd; color: #856404; }
+    /* Flat text status — no pill */
+    .badge { font-size: 10px; font-weight: 700; white-space: nowrap; display: inline-block; }
+    .badge-occupied    { color: #0369a1; }
+    .badge-available   { color: #15803d; }
+    .badge-maintenance { color: #856404; }
 
-    /* Hide type column on mobile */
     @media (max-width: 600px) {
         .col-hide { display: none; }
     }
@@ -93,15 +92,12 @@
     nav[role="navigation"] > div:first-child { display: none !important; }
 </style>
 
-{{-- CHANGED: Removed <p class="page-subtitle"> — subtitle moved to topbar via @section('page-subtitle') above --}}
-
 @if(session('success'))
     <div style="background: #dcfce7; color: #15803d; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 12px; border: 1px solid #bdf0cc;">
         {{ session('success') }}
     </div>
 @endif
 
-{{-- Add Property button outside the table card, right-aligned --}}
 @if(auth()->user()->role === 'admin')
 <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
     <button class="btn-add-top" onclick="openModal('addModal')">
@@ -139,7 +135,7 @@
                     <td style="font-weight:600; white-space:nowrap;">₱{{ number_format($property->rent_per_month, 0) }}</td>
                     <td>
                         <span class="badge {{ $property->status == 'Occupied' ? 'badge-occupied' : ($property->status == 'Available' ? 'badge-available' : 'badge-maintenance') }}">
-                            • {{ $property->status }}
+{{ $property->status }}
                         </span>
                     </td>
                     <td>
