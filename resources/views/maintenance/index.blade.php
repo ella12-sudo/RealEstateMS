@@ -1,132 +1,77 @@
 @extends('layouts.app')
 
 @section('page-title', 'Maintenance')
-
 @section('page-subtitle', 'Update task status and record repair expenses automatically.')
 
 @section('content')
 <style>
     .page-subtitle { font-size: 12px; color: #64748b; margin-bottom: 16px; margin-top: -10px; }
-    
     .table-card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); overflow: hidden; border: 1px solid #e2e8f0; }
     .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-
     table { width: 100%; border-collapse: collapse; min-width: 500px; }
     th { padding: 6px 14px; text-align: left; color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; background: #fafafa; border-bottom: 1px solid #f0f0f0; white-space: nowrap; }
     td { padding: 10px 14px; border-bottom: 1px solid #f5f5f5; font-size: 12.5px; color: #334155; vertical-align: middle; line-height: 1; }
-
-    /* Column widths */
     th:nth-child(1), td:nth-child(1) { width: 90px; }
     th:nth-child(2), td:nth-child(2) { width: 220px; max-width: 220px; overflow: hidden; }
     th:nth-child(3), td:nth-child(3) { width: 110px; }
     th:nth-child(4), td:nth-child(4) { width: 120px; }
     th:nth-child(5), td:nth-child(5) { width: 120px; }
-    th:nth-child(6), td:nth-child(6) { width: 80px; text-align: center !important; padding-right: 0; }
-
+    th:nth-child(6), td:nth-child(6) { width: 100px; text-align: center !important; padding-right: 0; }
     .priority-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; display: inline-block; white-space: nowrap; }
-.p-Emergency { color: #b91c1c; }
-.p-High { color: #9a3412; }
-.p-Medium { color: #075985; }
-.p-Low { color: #475569; }
-
-    .cost-box { margin-top: 5px; display: flex; gap: 4px; align-items: center; }
-    .cost-input { border: 1px solid #c9952a; border-radius: 4px; padding: 3px; width: 70px; font-size: 11px; outline: none; }
-    .btn-save { background: #1a2e4a; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 600; }
-
-    .status-select {
-    font-size: 10px; padding: 2px 4px; font-weight: 700;
-    cursor: pointer; border: none; outline: none;
-    text-align: center; height: 22px; background: transparent;
-}
-.status-Pending { color: #92400e; }
-.status-InProgress { color: #075985; }
-.status-Completed { color: #15803d; }
-
-    /* FIX 2: Single-line title with ellipsis */
+    .p-Emergency { color: #b91c1c; }
+    .p-High { color: #9a3412; }
+    .p-Medium { color: #075985; }
+    .p-Low { color: #475569; }
+    .status-badge { font-size: 10px; font-weight: 700; display: inline-block; white-space: nowrap; }
+    .status-Pending { color: #92400e; }
+    .status-InProgress { color: #075985; }
+    .status-Completed { color: #15803d; }
     .issue-title { font-weight: 600; color: #1a2e4a; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; line-height: 1.2; }
-    .issue-desc  { font-size: 11px; color: #94a3b8; margin-top: 1px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-    .tab-container { display: flex; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
-    .tabs { display: flex; background: #f1f5f9; padding: 3px; border-radius: 8px; gap: 2px; }
-    .tab-link { padding: 5px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; text-decoration: none; color: #64748b; transition: 0.2s; white-space: nowrap; }
-    .tab-link.active { background: white; color: #1a3b5c; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-    .tab-link.archived-tab.active { background: white; color: #c9952a; }
-
-    @media (max-width: 600px) {
-        .col-hide { display: none; }
-        table { min-width: 360px; }
-    }
-
+    .issue-desc { font-size: 11px; color: #94a3b8; margin-top: 1px; max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
     .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
     .pagination li a, .pagination li span { display: inline-block; padding: 5px 11px; border-radius: 6px; font-size: 12px; font-weight: 600; border: 1px solid #e2e8f0; color: #1a3b5c; text-decoration: none; background: white; }
     .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
     nav[role="navigation"] > div:first-child { display: none !important; }
 
     /* ===== MODAL STYLES ===== */
-    .modal-overlay {
-        display: none; position: fixed; inset: 0;
-        background: rgba(0,0,0,0.45); z-index: 9999;
-        align-items: center; justify-content: center;
-    }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 9999; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
-    .modal-box {
-        background: white; border-radius: 12px; padding: 24px;
-        width: 90%; max-width: 400px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        animation: modalIn 0.2s ease;
-    }
-    @keyframes modalIn {
-        from { transform: translateY(-16px); opacity: 0; }
-        to   { transform: translateY(0);     opacity: 1; }
-    }
+    .modal-box { background: white; border-radius: 12px; padding: 24px; width: 90%; max-width: 420px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); animation: modalIn 0.2s ease; }
+    @keyframes modalIn { from { transform: translateY(-16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .modal-title { margin: 0 0 4px; color: #1a2e4a; font-size: 15px; font-weight: 700; }
-    .modal-sub   { margin: 0 0 16px; font-size: 12px; color: #64748b; }
-    .modal-info  {
-        background: #f8fafc; border-radius: 8px; padding: 10px 12px;
-        margin-bottom: 16px; font-size: 12px; color: #334155;
-        border: 1px solid #e2e8f0; line-height: 1.8;
-    }
-    .modal-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-    .modal-input-wrap {
-        display: flex; align-items: center;
-        border: 1px solid #e2e8f0; border-radius: 8px;
-        padding: 8px 12px; margin-top: 6px; margin-bottom: 20px;
-    }
+    .modal-sub { margin: 0 0 16px; font-size: 12px; color: #64748b; }
+    .modal-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; margin-top: 12px; }
+    .modal-input { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; box-sizing: border-box; color: #1a2e4a; outline: none; }
+    .modal-input:focus { border-color: #1a3b5c; }
+    .modal-select { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; box-sizing: border-box; color: #1a2e4a; outline: none; background: white; }
+    .modal-textarea { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; box-sizing: border-box; color: #1a2e4a; outline: none; resize: vertical; min-height: 70px; }
+    .modal-input-wrap { display: flex; align-items: center; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; margin-top: 6px; }
     .modal-input-wrap span { color: #64748b; font-size: 13px; margin-right: 6px; }
-    .modal-input-wrap input {
-        border: none; outline: none; font-size: 13px;
-        width: 100%; color: #1a2e4a;
-    }
-    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-    .btn-cancel {
-        padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0;
-        background: white; color: #64748b; font-size: 12px;
-        font-weight: 600; cursor: pointer;
-    }
-    .btn-confirm {
-        padding: 8px 16px; border-radius: 8px; border: none;
-        background: #1a2e4a; color: white; font-size: 12px;
-        font-weight: 600; cursor: pointer;
-    }
+    .modal-input-wrap input { border: none; outline: none; font-size: 13px; width: 100%; color: #1a2e4a; }
+    .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+    .btn-cancel { padding: 8px 16px; border-radius: 8px; border: 1px solid #e2e8f0; background: white; color: #64748b; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-confirm { padding: 8px 16px; border-radius: 8px; border: none; background: #1a2e4a; color: white; font-size: 12px; font-weight: 600; cursor: pointer; }
     .btn-cancel:hover { background: #f1f5f9; }
     .btn-confirm:hover { background: #243d5e; }
+
+    @media (max-width: 600px) { .col-hide { display: none; } table { min-width: 360px; } }
 </style>
 
 @if(session('success'))
-    <div style="background: #dcfce7; color: #15803d; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; font-size: 12px; border: 1px solid #bdf0cc;">
+    <div style="background:#dcfce7;color:#15803d;padding:10px 14px;border-radius:8px;margin-bottom:14px;font-size:12px;border:1px solid #bdf0cc;">
         <i class="fas fa-check-circle"></i> {{ session('success') }}
     </div>
 @endif
 
-{{-- Simple archived toggle --}}
 <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
     @if($tab === 'active')
         <a href="{{ route('maintenance.index', ['tab' => 'archived']) }}"
-           style="font-size:12px; font-weight:600; color:#c9952a; text-decoration:none; display:flex; align-items:center; gap:5px; background:#fff8ed; border:1px solid #f0d9a8; padding:5px 12px; border-radius:7px;">
+           style="font-size:12px;font-weight:600;color:#c9952a;text-decoration:none;display:flex;align-items:center;gap:5px;background:#fff8ed;border:1px solid #f0d9a8;padding:5px 12px;border-radius:7px;">
             <i class="fas fa-archive"></i> View Archived
         </a>
     @else
         <a href="{{ route('maintenance.index', ['tab' => 'active']) }}"
-           style="font-size:12px; font-weight:600; color:#1a3b5c; text-decoration:none; display:flex; align-items:center; gap:5px; background:#f0f5ff; border:1px solid #c7d7ee; padding:5px 12px; border-radius:7px;">
+           style="font-size:12px;font-weight:600;color:#1a3b5c;text-decoration:none;display:flex;align-items:center;gap:5px;background:#f0f5ff;border:1px solid #c7d7ee;padding:5px 12px;border-radius:7px;">
             <i class="fas fa-tools"></i> View Active
         </a>
     @endif
@@ -153,51 +98,43 @@
                         <div class="issue-title">{{ Str::limit($req->title, 30) }}</div>
                         <div class="issue-desc">{{ Str::limit($req->description, 50) }}</div>
                     </td>
-                    <td style="white-space: nowrap;">{{ $req->tenant->user->first_name ?? 'N/A' }}</td>
+                    <td style="white-space:nowrap;">{{ $req->tenant->user->first_name ?? 'N/A' }}</td>
                     <td>
-                        @if($tab === 'active')
-                        <form action="{{ route('maintenance.update', $req->id) }}" method="POST" id="form-{{ $req->id }}">
-                            @csrf @method('PUT')
-                            <select name="status"
-                                onchange="checkStatus(this, {{ $req->id }}, '{{ addslashes(Str::limit($req->title, 30)) }}', '{{ addslashes($req->tenant->user->first_name ?? 'N/A') }}')"
-                                class="status-select status-{{ str_replace(' ', '', $req->status) }}"
-                                id="select-{{ $req->id }}">
-                                <option value="Pending" {{ $req->status == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="In Progress" {{ $req->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="Completed" {{ $req->status == 'Completed' ? 'selected' : '' }}>Completed</option>
-                            </select>
-                            <div id="cost-area-{{ $req->id }}" class="cost-box" style="display:none;">
-                                <input type="number" name="cost" class="cost-input" placeholder="₱" step="0.01">
-                            </div>
-                        </form>
-                        @else
-                            <span class="status-select status-{{ str_replace(' ', '', $req->status) }}" style="cursor:default;">{{ $req->status }}</span>
-                            @if($req->archived_at)
-                                <div style="font-size:10px; color:#94a3b8; margin-top:3px;">{{ $req->archived_at->format('M d, Y') }}</div>
-                            @endif
+                        {{-- Just display the status as a badge, no inline dropdown --}}
+                        <span class="status-badge status-{{ str_replace(' ', '', $req->status) }}">
+                            {{ $req->status }}
+                        </span>
+                        @if($tab === 'archived' && $req->archived_at)
+                            <div style="font-size:10px;color:#94a3b8;margin-top:3px;">{{ $req->archived_at->format('M d, Y') }}</div>
                         @endif
                     </td>
-                    <td class="col-hide" style="color:#64748b; white-space:nowrap;">{{ $req->created_at->format('M d, Y') }}</td>
+                    <td class="col-hide" style="color:#64748b;white-space:nowrap;">{{ $req->created_at->format('M d, Y') }}</td>
                     <td style="text-align:center;">
-    <div style="display:flex; justify-content:center; gap:5px; align-items:center;">
+                        <div style="display:flex;justify-content:center;gap:6px;align-items:center;">
                             @if($tab === 'active')
-                                {{-- CHANGED: Removed delete button. Archive button now shows for ALL active items. --}}
+                                {{-- EDIT BUTTON --}}
+                                <button type="button"
+                                    onclick="openEditModal({{ $req->id }}, '{{ addslashes($req->title) }}', '{{ addslashes($req->description) }}', '{{ $req->priority }}', '{{ $req->status }}', '{{ $req->cost }}')"
+                                    style="background:none;border:none;color:#1a3b5c;cursor:pointer;font-size:13px;" title="Edit">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                {{-- ARCHIVE BUTTON --}}
                                 <form action="{{ route('maintenance.archive', $req->id) }}" method="POST" onsubmit="return confirm('Archive this maintenance request?')">
                                     @csrf @method('PATCH')
-                                    <button type="submit" style="background:none; border:none; color:#c9952a; cursor:pointer; font-size:13px;" title="Archive">
+                                    <button type="submit" style="background:none;border:none;color:#c9952a;cursor:pointer;font-size:13px;" title="Archive">
                                         <i class="fas fa-archive"></i>
                                     </button>
                                 </form>
                             @else
                                 <form action="{{ route('maintenance.restore', $req->id) }}" method="POST" onsubmit="return confirm('Restore this?')">
                                     @csrf @method('PATCH')
-                                    <button type="submit" style="background:none; border:none; color:#16a34a; cursor:pointer; font-size:13px;" title="Restore">
+                                    <button type="submit" style="background:none;border:none;color:#16a34a;cursor:pointer;font-size:13px;" title="Restore">
                                         <i class="fas fa-undo"></i>
                                     </button>
                                 </form>
                                 <form action="{{ route('maintenance.destroy', $req->id) }}" method="POST" onsubmit="return confirm('Permanently delete?')">
                                     @csrf @method('DELETE')
-                                    <button type="submit" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px;" title="Delete">
+                                    <button type="submit" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:13px;" title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -207,7 +144,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" style="text-align:center; padding:40px; color:#94a3b8; font-size:13px;">
+                    <td colspan="6" style="text-align:center;padding:40px;color:#94a3b8;font-size:13px;">
                         {{ $tab === 'archived' ? 'No archived requests found.' : 'No maintenance requests found.' }}
                     </td>
                 </tr>
@@ -215,82 +152,82 @@
             </tbody>
         </table>
     </div>
-   @if($requests->hasPages())
-<div style="padding: 10px 14px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end;">
-    {{ $requests->links() }}
-</div>
-@endif
+    @if($requests->hasPages())
+    <div style="padding:10px 14px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end;">
+        {{ $requests->links() }}
+    </div>
+    @endif
 </div>
 
-<!-- ===== COMPLETION MODAL ===== -->
-<div id="completionModal" class="modal-overlay">
+<!-- ===== EDIT MODAL ===== -->
+<div id="editModal" class="modal-overlay">
     <div class="modal-box">
-        <h3 class="modal-title"><i class="fas fa-check-circle" style="color:#15803d; margin-right:6px;"></i>Mark as Completed</h3>
-        <p class="modal-sub">Optionally enter the repair cost before confirming.</p>
-        <div class="modal-info">
-            <div><strong>Issue:</strong> <span id="modal-issue-title"></span></div>
-            <div><strong>Tenant:</strong> <span id="modal-issue-tenant"></span></div>
-        </div>
-        <label class="modal-label">Repair Cost (Optional)</label>
-        <div class="modal-input-wrap">
-            <span>₱</span>
-            <input type="number" id="modal-cost-input" placeholder="0.00" step="0.01" min="0">
-        </div>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-            <button class="btn-confirm" onclick="submitCompletion()">Confirm & Save</button>
-        </div>
+        <h3 class="modal-title"><i class="fas fa-pen" style="color:#1a3b5c;margin-right:6px;"></i>Edit Maintenance Request</h3>
+        <p class="modal-sub">Update the details and status of this request.</p>
+        <form id="editForm" method="POST">
+            @csrf @method('PUT')
+
+            <label class="modal-label">Title</label>
+            <input type="text" name="title" id="edit-title" class="modal-input" required>
+
+            <label class="modal-label">Description</label>
+            <textarea name="description" id="edit-description" class="modal-textarea"></textarea>
+
+            <label class="modal-label">Priority</label>
+            <select name="priority" id="edit-priority" class="modal-select">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Emergency">Emergency</option>
+            </select>
+
+            <label class="modal-label">Status</label>
+            <select name="status" id="edit-status" class="modal-select" onchange="toggleCostField()">
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <div id="edit-cost-wrap" style="display:none;">
+                <label class="modal-label">Repair Cost (Optional)</label>
+                <div class="modal-input-wrap">
+                    <span>₱</span>
+                    <input type="number" name="cost" id="edit-cost" placeholder="0.00" step="0.01" min="0">
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="btn-confirm">Save Changes</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
-let activeFormId = null;
-let activeSelect = null;
-
-function checkStatus(select, id, issueTitle, tenantName) {
-    const statusMap = { 'Pending': 'status-Pending', 'In Progress': 'status-InProgress', 'Completed': 'status-Completed' };
-    select.className = 'status-select ' + (statusMap[select.value] || '');
-
-    if (select.value === 'Completed') {
-        activeFormId = id;
-        activeSelect = select;
-        document.getElementById('modal-issue-title').textContent = issueTitle;
-        document.getElementById('modal-issue-tenant').textContent = tenantName;
-        document.getElementById('modal-cost-input').value = '';
-        document.getElementById('completionModal').classList.add('show');
-    } else {
-        const costArea = document.getElementById('cost-area-' + id);
-        costArea.style.display = 'none';
-        document.getElementById('form-' + id).submit();
-    }
+// ===== EDIT MODAL =====
+function toggleCostField() {
+    const status = document.getElementById('edit-status').value;
+    document.getElementById('edit-cost-wrap').style.display = status === 'Completed' ? 'block' : 'none';
 }
 
-function closeModal() {
-    document.getElementById('completionModal').classList.remove('show');
-    if (activeSelect) {
-        activeSelect.value = activeSelect.dataset.previous || 'Pending';
-        const statusMap = { 'Pending': 'status-Pending', 'In Progress': 'status-InProgress', 'Completed': 'status-Completed' };
-        activeSelect.className = 'status-select ' + (statusMap[activeSelect.value] || '');
-    }
-    activeFormId = null;
-    activeSelect = null;
+function openEditModal(id, title, description, priority, status, cost) {
+    document.getElementById('editForm').action = '/maintenance/' + id;
+    document.getElementById('edit-title').value = title;
+    document.getElementById('edit-description').value = description;
+    document.getElementById('edit-priority').value = priority;
+    document.getElementById('edit-status').value = status;
+    document.getElementById('edit-cost').value = cost > 0 ? cost : '';
+    toggleCostField();
+    document.getElementById('editModal').classList.add('show');
 }
 
-function submitCompletion() {
-    if (!activeFormId) return;
-    const cost = document.getElementById('modal-cost-input').value;
-    const form = document.getElementById('form-' + activeFormId);
-    const costInput = form.querySelector('input[name="cost"]');
-    if (costInput) costInput.value = cost;
-    document.getElementById('completionModal').classList.remove('show');
-    form.submit();
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('show');
 }
 
-document.querySelectorAll('.status-select').forEach(function(select) {
-    select.dataset.previous = select.value;
-    select.addEventListener('focus', function() {
-        this.dataset.previous = this.value;
-    });
+document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
 });
 </script>
 @endsection

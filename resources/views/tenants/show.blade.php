@@ -34,8 +34,8 @@
     .detail-footer { padding: 12px 20px; border-top: 1px solid #f0f0f0; }
     .btn-back { color: #1a2e4a; text-decoration: none; font-size: 13px; font-weight: 600; }
     .btn-back:hover { color: #c9952a; }
-    .badge-active { background: #dcfce7; color: #166534; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
-    .badge-expired { background: #fee2e2; color: #991b1b; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+    .badge-active { color: #166534; font-size: 12px; font-weight: 600; }
+    .badge-expired { color: #991b1b; font-size: 12px; font-weight: 600; }
 </style>
 
 <div class="detail-card">

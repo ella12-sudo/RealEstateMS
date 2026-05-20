@@ -7,77 +7,41 @@ use App\Http\Controllers\TenantController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\MaintenanceController;
 
-// Redirect home to login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// All these routes require login
 Route::middleware(['auth'])->group(function () {
 
-    // --- Admin Routes ---
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('properties', PropertyController::class);
     Route::resource('tenants', TenantController::class);
-    
-    Route::patch('tenants/{tenant}/vacate', [TenantController::class, 'vacate'])
-        ->name('tenants.vacate');
+    Route::patch('tenants/{tenant}/vacate', [TenantController::class, 'vacate'])->name('tenants.vacate');
 
     Route::resource('payments', PaymentController::class);
+    Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve'])->name('payments.approve');
 
-    // ADDED: Route for Admin to approve a pending payment
-    Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve'])
-        ->name('payments.approve');
+    // Maintenance — only excluding 'show' now so edit/update work via modal
+    Route::resource('maintenance', MaintenanceController::class)->except(['show']);
 
-    /**
-     * MAINTENANCE ROUTE FIX
-     * This stops the 404/405 errors by disabling the non-existent show/edit pages.
-     */
-    Route::resource('maintenance', MaintenanceController::class)->except(['show', 'edit']);
+    Route::patch('/maintenance/{id}/archive', [MaintenanceController::class, 'archive'])->name('maintenance.archive');
+    Route::patch('/maintenance/{id}/restore', [MaintenanceController::class, 'restore'])->name('maintenance.restore');
 
-    // ADDED: Archive and Restore maintenance
-    Route::patch('/maintenance/{id}/archive', [MaintenanceController::class, 'archive'])
-        ->name('maintenance.archive');
-    Route::patch('/maintenance/{id}/restore', [MaintenanceController::class, 'restore'])
-        ->name('maintenance.restore');
-
-    // --- Tenant Portal Routes ---
     Route::prefix('tenant')->name('tenant.')->group(function () {
-        
-        // Dashboard View
-        Route::get('/dashboard', [DashboardController::class, 'tenant'])
-            ->name('dashboard');
-
-        // Payments View
-        Route::get('/payments', [DashboardController::class, 'payments'])
-            ->name('payments');
-
-        // ADDED: Route to handle the submission of new payments
-        Route::post('/payments/store', [DashboardController::class, 'storePayment'])
-            ->name('payments.store');
-
-        // ADDED: Route to view the payment receipt
-        Route::get('/payments/{payment}/receipt', [DashboardController::class, 'showReceipt'])
-            ->name('payments.receipt');
-
-        // Maintenance View & Submission
-        Route::get('/maintenance', [DashboardController::class, 'maintenance'])
-            ->name('maintenance');
-
-        // Route to handle the submission of new maintenance requests
-        Route::post('/maintenance/store', [DashboardController::class, 'storeMaintenance'])
-            ->name('maintenance.store');
+        Route::get('/dashboard', [DashboardController::class, 'tenant'])->name('dashboard');
+        Route::get('/payments', [DashboardController::class, 'payments'])->name('payments');
+        Route::post('/payments/store', [DashboardController::class, 'storePayment'])->name('payments.store');
+        Route::get('/payments/{payment}/receipt', [DashboardController::class, 'showReceipt'])->name('payments.receipt');
+        Route::get('/maintenance', [DashboardController::class, 'maintenance'])->name('maintenance');
+        Route::post('/maintenance/store', [DashboardController::class, 'storeMaintenance'])->name('maintenance.store');
     });
 
-    // ADDED: Route to clear notifications (Used by the Admin Bell icon)
     Route::get('/notifications/mark-as-read', function() {
         auth()->user()->unreadNotifications->markAsRead();
         return back();
     })->name('notifications.markAsRead');
 
-    // ADDED: Route to mark a single notification as read and redirect to payments
     Route::get('/notifications/{id}/read', function($id) {
         auth()->user()->notifications()->find($id)?->markAsRead();
         return redirect()->route('payments.index');

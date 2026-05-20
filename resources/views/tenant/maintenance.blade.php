@@ -101,7 +101,7 @@
        .badge { font-size: 10.5px; font-weight: 700; display: inline-block; }
 .status-pending    { color: #92400e; }
 .status-inprogress { color: #075985; }
-.status-completed  { color: #15803d; }
+.status-completed  { color: #15803d; }php
 
         .action-bar {
             display: flex;
@@ -264,9 +264,13 @@
                                     {{ $request->status }}
                                 </span>
                             </td>
-                            <td style="font-weight: 700; color: #1a3b5c; white-space: nowrap;">
-                                ₱{{ number_format($request->cost ?? 0, 2) }}
-                            </td>
+                           <td style="font-weight: 700; color: #1a3b5c; white-space: nowrap;">
+    @if($request->cost && $request->cost > 0)
+        ₱{{ number_format($request->cost, 2) }}
+    @else
+        <span style="color:#94a3b8; font-weight:400; font-size:11px;">—</span>
+    @endif
+</td>
                         </tr>
                         @empty
                         <tr>

@@ -77,28 +77,23 @@ class MaintenanceController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
-    {
-        $maintenance = Maintenance::findOrFail($id);
-        $oldStatus = $maintenance->status;
+   public function update(Request $request, $id)
+{
+    $maintenance = Maintenance::findOrFail($id);
 
-        $maintenance->update($request->all());
+    $maintenance->title       = $request->title;
+    $maintenance->description = $request->description;
+    $maintenance->priority    = $request->priority;
+    $maintenance->status      = $request->status;
 
-        if ($oldStatus !== 'Completed' && $request->status === 'Completed' && $request->cost > 0) {
-            Payment::create([
-                'tenant_id'    => $maintenance->tenant_id,
-                'property_id'  => $maintenance->property_id,
-                'amount'       => $request->cost,
-                'type'         => 'Maintenance',
-                'payment_date' => now(),
-                'status'       => 'Paid',
-                'notes'        => 'Repair expense for: ' . $maintenance->title
-            ]);
-        }
-
-        return redirect()->route('maintenance.index')->with('success', 'Status updated and expense recorded!');
+    if ($request->status === 'Completed' && $request->filled('cost')) {
+        $maintenance->cost = $request->cost;
     }
 
+    $maintenance->save();
+
+    return redirect()->route('maintenance.index')->with('success', 'Maintenance request updated successfully.');
+}
     // ADDED: Archive a maintenance record
     public function archive($id)
     {

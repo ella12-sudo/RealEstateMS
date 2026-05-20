@@ -28,8 +28,8 @@
     .detail-footer { padding: 12px 18px; border-top: 1px solid #f0f0f0; }
     .btn-back { background: #f1f5f9; color: #1a2e4a; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; transition: 0.2s; }
     .btn-back:hover { background: #e2e8f0; }
-    .badge-occupied { background: #dcfce7; color: #166534; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
-    .badge-available { background: #dbeafe; color: #1e40af; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+    .badge-occupied { color: #166534; font-size: 11px; font-weight: 600; }
+    .badge-available { color: #1e40af; font-size: 11px; font-weight: 600; }
 </style>
 
 <div class="detail-card">
