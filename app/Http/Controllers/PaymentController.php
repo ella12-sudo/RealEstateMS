@@ -87,13 +87,23 @@ class PaymentController extends Controller
         $payment->payment_method = $request->payment_method;
         $payment->due_date       = $request->due_date ?? now();
         
-        // CHANGED TO PENDING: So Admin can verify it later
-        $payment->status         = 'Pending'; 
+        // Set to Paid immediately since admin is recording cash directly
+        $payment->status         = 'Paid';
+        $payment->paid_at        = now();
         
         $payment->notes          = $request->notes;
         $payment->save();
 
-        return redirect()->route('payments.index')->with('success', 'Payment recorded as Pending!');
+        // Create Transaction record
+        Transaction::create([
+            'payment_id' => $payment->id,
+            'amount'     => $payment->amount,
+            'net_amount' => $payment->amount / 1.12,
+            'vat_amount' => $payment->amount - ($payment->amount / 1.12),
+            'status'     => 'completed',
+        ]);
+
+        return redirect()->route('payments.index')->with('success', 'Payment recorded successfully!');
     }
 
     public function edit($id)
@@ -136,30 +146,40 @@ class PaymentController extends Controller
     }
 
     /**
-     * ADDED: Method to approve pending payments.
+     * Approve a pending payment.
      */
     public function approve(Request $request, $id)
-{
-    $payment = Payment::findOrFail($id);
-    
-    // Kunin ang method galing sa dropdown/hidden input ng modal
-    $method = $request->input('payment_method', 'Cash'); 
+    {
+        $payment = Payment::findOrFail($id);
+        
+        $method = $request->input('payment_method', 'Cash'); 
 
-    $payment->update([
-        'status' => 'Paid',
-        'paid_at' => now(),
-        'method' => $method, // Dito sine-save yung 'Cash' o 'GCash'
-    ]);
+        $payment->update([
+            'status'  => 'Paid',
+            'paid_at' => now(),
+            'method'  => $method,
+        ]);
 
-    // Create Transaction
-    Transaction::create([
-        'payment_id' => $payment->id,
-        'amount' => $payment->amount,
-        'net_amount' => $payment->amount / 1.12,
-        'vat_amount' => $payment->amount - ($payment->amount / 1.12),
-        'status' => 'completed',
-    ]);
+        // Create Transaction
+        Transaction::create([
+            'payment_id' => $payment->id,
+            'amount'     => $payment->amount,
+            'net_amount' => $payment->amount / 1.12,
+            'vat_amount' => $payment->amount - ($payment->amount / 1.12),
+            'status'     => 'completed',
+        ]);
 
-    return redirect()->back()->with('success', 'Payment updated successfully!');
-}
+        return redirect()->back()->with('success', 'Payment approved successfully!');
+    }
+
+    /**
+     * Archive a payment.
+     */
+    public function archive($id)
+    {
+        $payment = Payment::findOrFail($id);
+        $payment->update(['status' => 'Archived']);
+
+        return redirect()->back()->with('success', 'Payment archived successfully!');
+    }
 }

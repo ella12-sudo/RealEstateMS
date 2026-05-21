@@ -53,8 +53,8 @@
     tbody tr:hover { background-color: #f8fafc; }
 
     .badge { font-size: 10px; font-weight: 700; display: inline-block; white-space: nowrap; }
-.bg-rent { color: #15803d; }
-.bg-maint { color: #b91c1c; }
+    .bg-rent { color: #15803d; }
+    .bg-maint { color: #b91c1c; }
 
     .btn-view-receipt { color: #1a2e4a; background: #f1f5f9; padding: 4px 7px; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
     .btn-approve { color: #15803d; background: #dcfce7; padding: 4px 7px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; }
@@ -69,7 +69,7 @@
     .modal-title { font-size: 15px; font-weight: 700; color: #1a2e4a; margin-bottom: 16px; }
     .modal-form-group { margin-bottom: 14px; }
     .modal-form-group label { display: block; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 5px; }
-    .modal-form-group input { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; }
+    .modal-form-group input, .modal-form-group select { width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box; }
     .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
 
     .pagination { display: flex; gap: 6px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
@@ -77,8 +77,6 @@
     .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
     nav[role="navigation"] > div:first-child { display: none !important; }
 </style>
-
-{{-- CHANGED: Removed <p class="page-subtitle"> — subtitle moved to topbar via @section('page-subtitle') above --}}
 
 <div class="summary-grid">
     <div class="summary-card green">
@@ -108,9 +106,16 @@
     </div>
 
     <div class="table-card">
+        {{-- UPDATED: Added Record Payment button, removed yellow cash button --}}
         <div class="table-header">
             <h3>Recent Transactions</h3>
-            <span style="font-size:11px; color:#94a3b8;">{{ $payments->total() }} records</span>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <span style="font-size:11px; color:#94a3b8;">{{ $payments->total() }} records</span>
+                <button type="button" onclick="openCashModal(0, 0)"
+                    style="background:#1a2e4a; color:white; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:4px;">
+                    <i class="fas fa-plus"></i> Record Payment
+                </button>
+            </div>
         </div>
         <div class="table-wrap">
             <table>
@@ -143,10 +148,6 @@
                         <td style="text-align: right;">
                             <div style="display: flex; justify-content: flex-end; gap: 4px; align-items: center;">
                                 @if(auth()->user()->role === 'admin' && $payment->status === 'Pending')
-                                    <button type="button" class="btn-approve" style="background: #fef9c3; color: #a16207;" 
-                                            onclick="openCashModal({{ $payment->id }}, {{ $payment->amount }})" title="Receive Cash">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                    </button>
                                     <form action="{{ route('payments.approve', $payment->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Approve this payment?')">
                                         @csrf @method('PATCH')
                                         <button type="submit" class="btn-approve" title="Approve Payment">
@@ -157,6 +158,14 @@
                                 <a href="{{ route('payments.show', $payment->id) }}" class="btn-view-receipt" title="View Receipt">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                @if(auth()->user()->role === 'admin')
+                                    <form action="{{ route('payments.archive', $payment->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Archive this payment?')">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" style="color:#dc2626; background:#fee2e2; padding:4px 7px; border-radius:6px; border:none; cursor:pointer; font-size:11px; font-weight:600; display:inline-flex; align-items:center;" title="Archive Payment">
+                                            <i class="fas fa-archive"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -166,30 +175,54 @@
                 </tbody>
             </table>
         </div>
-       @if($payments->hasPages())
-<div style="padding: 12px 14px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end;">
-    {{ $payments->links() }}
-</div>
-@endif
+        @if($payments->hasPages())
+        <div style="padding: 12px 14px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end;">
+            {{ $payments->links() }}
+        </div>
+        @endif
     </div>
 </div>
 
+{{-- UPDATED: Cash modal now handles both new payments and approving existing ones --}}
 <div class="modal-overlay" id="cashModal">
     <div class="modal-box">
-        <div class="modal-title">Process Payment</div>
+        <div class="modal-title" id="modalTitle">Process Payment</div>
         <form action="" id="cashForm" method="POST">
-            @csrf @method('PATCH')
+            @csrf
+            <input type="hidden" name="_method" id="formMethod" value="PATCH">
+
+            {{-- For new payments only --}}
+            <div id="newPaymentFields" style="display:none;">
+                <div class="modal-form-group">
+                    <label>Tenant</label>
+                    <select name="tenant_id" id="tenantSelect" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; font-size:13px; outline:none; background:white; box-sizing:border-box;">
+                        <option value="">Select Tenant</option>
+                        @foreach($tenants as $tenant)
+                            <option value="{{ $tenant->id }}" data-amount="{{ $tenant->property->rent_amount ?? 0 }}">
+                                {{ $tenant->user->first_name }} {{ $tenant->user->last_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-form-group">
+                    <label>Amount</label>
+                    <input type="number" name="amount" id="newAmount" placeholder="e.g. 20000" oninput="syncAmount()">
+                </div>
+                <div class="modal-form-group">
+                    <label>Payment Date</label>
+                    <input type="date" name="payment_date" value="{{ date('Y-m-d') }}">
+                </div>
+            </div>
+
             <div class="modal-form-group">
                 <label>Payment Method</label>
-                <select name="payment_method" style="width: 100%; padding: 10px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; outline: none; background: white;" onchange="toggleCalculator(this.value)">
+                <select name="payment_method" id="paymentMethodSelect" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; font-size:13px; outline:none; background:white; box-sizing:border-box;">
                     <option value="Cash">Cash</option>
-                    <option value="GCash">GCash</option>
-                    <option value="Online Banking">Online Banking</option>
                 </select>
             </div>
             <div class="modal-form-group">
                 <label>Total Bill Amount</label>
-                <input type="text" id="bill_amount_display" readonly style="background: #f8fafc; font-weight: 700;">
+                <input type="text" id="bill_amount_display" readonly style="background:#f8fafc; font-weight:700;">
             </div>
             <div id="calculator_fields">
                 <div class="modal-form-group">
@@ -198,38 +231,57 @@
                 </div>
                 <div class="modal-form-group">
                     <label>Change (Sukli)</label>
-                    <input type="text" id="change_amount" readonly style="font-weight: 700; background: #f8fafc;">
+                    <input type="text" id="change_amount" readonly style="font-weight:700; background:#f8fafc;">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="closeModal('cashModal')" style="padding: 8px 14px; border-radius: 6px; border: 1px solid #e2e8f0; background: white; cursor: pointer; font-size: 13px;">Cancel</button>
-                <button type="submit" style="padding: 8px 14px; border-radius: 6px; border: none; background: #1a2e4a; color: white; cursor: pointer; font-weight: 600; font-size: 13px;">Confirm & Paid</button>
+                <button type="button" onclick="closeModal('cashModal')" style="padding:8px 14px; border-radius:6px; border:1px solid #e2e8f0; background:white; cursor:pointer; font-size:13px;">Cancel</button>
+                <button type="submit" style="padding:8px 14px; border-radius:6px; border:none; background:#1a2e4a; color:white; cursor:pointer; font-weight:600; font-size:13px;">Confirm & Paid</button>
             </div>
         </form>
     </div>
 </div>
 
-<script>
-function toggleCalculator(method) {
-    const calcFields = document.getElementById('calculator_fields');
-    const amountReceived = document.getElementById('amount_received');
-    if (method === 'Cash') { calcFields.style.display = 'block'; amountReceived.required = true; }
-    else { calcFields.style.display = 'none'; amountReceived.required = false; amountReceived.value = ''; }
-}
-</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 function openCashModal(id, amount) {
     const modal = document.getElementById('cashModal');
     const form = document.getElementById('cashForm');
-    form.action = `/payments/${id}/approve`;
-    document.getElementById('bill_amount_display').value = '₱' + parseFloat(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
-    document.getElementById('bill_amount_display').dataset.raw = amount;
+    const newFields = document.getElementById('newPaymentFields');
+    const methodInput = document.getElementById('formMethod');
+
+    if (id === 0) {
+        // New payment — Record Payment button
+        document.getElementById('modalTitle').innerText = 'Record New Payment';
+        form.action = '{{ route("payments.store") }}';
+        methodInput.value = 'POST';
+        newFields.style.display = 'block';
+        document.getElementById('bill_amount_display').value = '';
+        document.getElementById('bill_amount_display').dataset.raw = 0;
+    } else {
+        // Existing pending payment — Approve (✓) button
+        document.getElementById('modalTitle').innerText = 'Process Payment';
+        form.action = `/payments/${id}/approve`;
+        methodInput.value = 'PATCH';
+        newFields.style.display = 'none';
+        document.getElementById('bill_amount_display').value = '₱' + parseFloat(amount).toLocaleString(undefined, {minimumFractionDigits: 2});
+        document.getElementById('bill_amount_display').dataset.raw = amount;
+    }
+
     document.getElementById('amount_received').value = '';
     document.getElementById('change_amount').value = '₱0.00';
     modal.style.display = 'flex';
 }
+
+function syncAmount() {
+    const val = parseFloat(document.getElementById('newAmount').value) || 0;
+    document.getElementById('bill_amount_display').value = '₱' + val.toLocaleString(undefined, {minimumFractionDigits: 2});
+    document.getElementById('bill_amount_display').dataset.raw = val;
+    calculateChange();
+}
+
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
 function calculateChange() {
     const bill = parseFloat(document.getElementById('bill_amount_display').dataset.raw);
     const received = parseFloat(document.getElementById('amount_received').value) || 0;
@@ -240,6 +292,7 @@ function calculateChange() {
         changeInput.style.color = change >= 0 ? '#15803d' : '#dc3545';
     }
 }
+
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('paymentHistoryChart').getContext('2d');
     new Chart(ctx, {

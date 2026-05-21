@@ -21,6 +21,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('payments', PaymentController::class);
     Route::patch('/payments/{payment}/approve', [PaymentController::class, 'approve'])->name('payments.approve');
+    Route::patch('/payments/{id}/archive', [PaymentController::class, 'archive'])->name('payments.archive');
 
     // Maintenance — only excluding 'show' now so edit/update work via modal
     Route::resource('maintenance', MaintenanceController::class)->except(['show']);
