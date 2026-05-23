@@ -98,10 +98,10 @@
         th { padding: 7px 14px; background: #f8fafc; text-align: left; font-size: 10.5px; text-transform: uppercase; color: #64748b; font-weight: 700; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }
         td { padding: 7px 14px; font-size: 12px; border-bottom: 1px solid #f1f5f9; color: #334155; line-height: 1.4; }
 
-       .badge { font-size: 10.5px; font-weight: 700; display: inline-block; }
-.status-pending    { color: #92400e; }
-.status-inprogress { color: #075985; }
-.status-completed  { color: #15803d; }php
+        .badge { font-size: 10.5px; font-weight: 700; display: inline-block; }
+        .status-pending    { color: #92400e; }
+        .status-inprogress { color: #075985; }
+        .status-completed  { color: #15803d; }
 
         .action-bar {
             display: flex;
@@ -119,24 +119,23 @@
             background: #1a3b5c;
             color: white;
             border: none;
-            padding: 7px 14px;
+            padding: 8px 16px;
             border-radius: 7px;
             font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             white-space: nowrap;
+            transition: background 0.2s;
         }
+        .btn-request:hover { background: #243d5e; }
 
         .pagination-wrap { padding: 10px 14px; border-top: 1px solid #f0f0f0; }
         .pagination-wrap nav { display: flex; justify-content: flex-end; }
         .pagination-wrap nav > div:first-child { display: none !important; }
-        .pagination-wrap nav > div:last-child {
-            display: flex;
-            justify-content: flex-end;
-        }
+        .pagination-wrap nav > div:last-child { display: flex; justify-content: flex-end; }
         .pagination-wrap nav > div:last-child ul,
         .pagination-wrap nav ul {
             display: flex !important;
@@ -264,13 +263,13 @@
                                     {{ $request->status }}
                                 </span>
                             </td>
-                           <td style="font-weight: 700; color: #1a3b5c; white-space: nowrap;">
-    @if($request->cost && $request->cost > 0)
-        ₱{{ number_format($request->cost, 2) }}
-    @else
-        <span style="color:#94a3b8; font-weight:400; font-size:11px;">—</span>
-    @endif
-</td>
+                            <td style="font-weight: 700; color: #1a3b5c; white-space: nowrap;">
+                                @if($request->cost && $request->cost > 0)
+                                    ₱{{ number_format($request->cost, 2) }}
+                                @else
+                                    <span style="color:#94a3b8; font-weight:400; font-size:11px;">—</span>
+                                @endif
+                            </td>
                         </tr>
                         @empty
                         <tr>
@@ -292,6 +291,7 @@
     </div>
 </div>
 
+<!-- REQUEST MODAL -->
 <div id="requestModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center; padding: 20px;">
     <div style="background:white; border-radius:12px; padding:25px; width:100%; max-width:500px;">
         <h3 style="margin-bottom: 20px; color: #1a3b5c; font-weight: 700;">New Maintenance Request</h3>

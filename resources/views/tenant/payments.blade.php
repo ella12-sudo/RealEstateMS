@@ -11,9 +11,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #f4f7fa; display: flex; min-height: 100vh; }
 
-        /* ── SIDEBAR ── */
         .sidebar {
-    width: 220px;
+            width: 220px;
             background: #1a3b5c;
             color: white;
             display: flex;
@@ -25,23 +24,23 @@
         }
 
         .sidebar-logo-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    background: rgba(0,0,0,0.1);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    height: 120px;
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            height: 120px;
+        }
 
-.logo-image-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
-}
+        .logo-image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
 
         .logo-image-container img {
             width: 100%;
@@ -51,21 +50,21 @@
         }
 
         .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 20px;
-    color: #cbd5e0;
-    text-decoration: none;
-    font-size: 13.5px;
-    transition: all 0.2s;
-}
-.nav-item:hover, .nav-item.active {
-    background: rgba(255,255,255,0.08);
-    color: white;
-    border-left: 3px solid #c9952a;
-}
-.nav-item i { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #cbd5e0;
+            text-decoration: none;
+            font-size: 13.5px;
+            transition: all 0.2s;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border-left: 3px solid #c9952a;
+        }
+        .nav-item i { width: 20px; text-align: center; font-size: 16px; opacity: 0.8; }
 
         .sidebar-footer { margin-top: auto; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.06); }
         .logout-btn { background: none; border: none; cursor: pointer; color: #fc8181; font-size: 12.5px; opacity: 0.9; display: flex; align-items: center; gap: 8px; }
@@ -73,7 +72,6 @@
         .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 999; }
         .sidebar-overlay.active { display: block; }
 
-        /* ── MAIN ── */
         .main-content { margin-left: 220px; flex: 1; display: flex; flex-direction: column; width: calc(100% - 220px); min-width: 0; }
 
         .topbar {
@@ -95,7 +93,6 @@
 
         .page-body { padding: 20px 22px; }
 
-        /* ── STAT CARDS ── */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
 
         .stat-card {
@@ -124,7 +121,6 @@
             line-height: 1.2;
         }
 
-        /* ── TABLE CARD ── */
         .table-card {
             background: white;
             border-radius: 8px;
@@ -187,17 +183,15 @@
         tr:hover td { background: #fafcff; }
 
         .badge { font-size: 10.5px; font-weight: 700; display: inline-block; text-transform: uppercase; }
-.bg-success     { color: #155724; }
-.status-paid    { color: #155724; font-size: 10.5px; font-weight: 700; display: inline-block; }
-.status-pending { color: #92400e; font-size: 10.5px; font-weight: 700; display: inline-block; }; font-size: 10.5px; font-weight: 600; display: inline-block; 
+        .bg-success     { color: #155724; }
+        .status-paid    { color: #155724; font-size: 10.5px; font-weight: 700; display: inline-block; }
+        .status-pending { color: #92400e; font-size: 10.5px; font-weight: 700; display: inline-block; }
 
-        /* ── PAGINATION ── */
         .pagination { display: flex; gap: 5px; list-style: none; padding: 0; margin: 0; justify-content: flex-end; flex-wrap: wrap; }
         .pagination li a, .pagination li span { display: inline-block; padding: 4px 10px; border-radius: 5px; font-size: 11.5px; font-weight: 600; border: 1px solid #e2e8f0; color: #1a3b5c; text-decoration: none; background: white; }
         .pagination li.active span { background: #1a3b5c; color: white; border-color: #1a3b5c; }
         nav[role="navigation"] > div:first-child { display: none !important; }
 
-        /* ── MODAL ── */
         .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:2000; padding: 20px; }
         .modal-content { background:white; padding:24px; border-radius:10px; width:100%; max-width:420px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
         .modal-title { font-size: 15px; font-weight: 700; color: #1a3b5c; margin-bottom: 18px; }
@@ -213,7 +207,6 @@
         .btn-confirm { background:#1a3b5c; color:white; border:none; padding:8px 20px; border-radius:6px; cursor:pointer; font-weight:600; font-size: 12.5px; font-family: inherit; }
         .btn-confirm:hover { background: #15304d; }
 
-        /* ── RESPONSIVE ── */
         @media (max-width: 992px) {
             .menu-toggle { display: block; }
             .sidebar { transform: translateX(-100%); }
@@ -374,7 +367,6 @@
                 <label class="form-label">Payment Method</label>
                 <select name="payment_method" class="form-input" required>
                     <option value="GCash">GCash</option>
-                    <option value="Cash">Cash (Over the counter)</option>
                     <option value="Online Banking">Online Banking</option>
                 </select>
             </div>

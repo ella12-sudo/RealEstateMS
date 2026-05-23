@@ -41,10 +41,7 @@
     .modal-title { margin: 0 0 4px; color: #1a2e4a; font-size: 15px; font-weight: 700; }
     .modal-sub { margin: 0 0 16px; font-size: 12px; color: #64748b; }
     .modal-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; margin-top: 12px; }
-    .modal-input { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; box-sizing: border-box; color: #1a2e4a; outline: none; }
-    .modal-input:focus { border-color: #1a3b5c; }
     .modal-select { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; box-sizing: border-box; color: #1a2e4a; outline: none; background: white; }
-    .modal-textarea { border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 13px; width: 100%; box-sizing: border-box; color: #1a2e4a; outline: none; resize: vertical; min-height: 70px; }
     .modal-input-wrap { display: flex; align-items: center; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; margin-top: 6px; }
     .modal-input-wrap span { color: #64748b; font-size: 13px; margin-right: 6px; }
     .modal-input-wrap input { border: none; outline: none; font-size: 13px; width: 100%; color: #1a2e4a; }
@@ -100,7 +97,6 @@
                     </td>
                     <td style="white-space:nowrap;">{{ $req->tenant->user->first_name ?? 'N/A' }}</td>
                     <td>
-                        {{-- Just display the status as a badge, no inline dropdown --}}
                         <span class="status-badge status-{{ str_replace(' ', '', $req->status) }}">
                             {{ $req->status }}
                         </span>
@@ -112,13 +108,11 @@
                     <td style="text-align:center;">
                         <div style="display:flex;justify-content:center;gap:6px;align-items:center;">
                             @if($tab === 'active')
-                                {{-- EDIT BUTTON --}}
                                 <button type="button"
-                                    onclick="openEditModal({{ $req->id }}, '{{ addslashes($req->title) }}', '{{ addslashes($req->description) }}', '{{ $req->priority }}', '{{ $req->status }}', '{{ $req->cost }}')"
+                                    onclick="openEditModal({{ $req->id }}, '{{ $req->priority }}', '{{ $req->status }}', '{{ $req->cost }}')"
                                     style="background:none;border:none;color:#1a3b5c;cursor:pointer;font-size:13px;" title="Edit">
                                     <i class="fas fa-pen"></i>
                                 </button>
-                                {{-- ARCHIVE BUTTON --}}
                                 <form action="{{ route('maintenance.archive', $req->id) }}" method="POST" onsubmit="return confirm('Archive this maintenance request?')">
                                     @csrf @method('PATCH')
                                     <button type="submit" style="background:none;border:none;color:#c9952a;cursor:pointer;font-size:13px;" title="Archive">
@@ -163,15 +157,9 @@
 <div id="editModal" class="modal-overlay">
     <div class="modal-box">
         <h3 class="modal-title"><i class="fas fa-pen" style="color:#1a3b5c;margin-right:6px;"></i>Edit Maintenance Request</h3>
-        <p class="modal-sub">Update the details and status of this request.</p>
+        <p class="modal-sub">Update the priority and status of this request.</p>
         <form id="editForm" method="POST">
             @csrf @method('PUT')
-
-            <label class="modal-label">Title</label>
-            <input type="text" name="title" id="edit-title" class="modal-input" required>
-
-            <label class="modal-label">Description</label>
-            <textarea name="description" id="edit-description" class="modal-textarea"></textarea>
 
             <label class="modal-label">Priority</label>
             <select name="priority" id="edit-priority" class="modal-select">
@@ -205,16 +193,13 @@
 </div>
 
 <script>
-// ===== EDIT MODAL =====
 function toggleCostField() {
     const status = document.getElementById('edit-status').value;
     document.getElementById('edit-cost-wrap').style.display = status === 'Completed' ? 'block' : 'none';
 }
 
-function openEditModal(id, title, description, priority, status, cost) {
+function openEditModal(id, priority, status, cost) {
     document.getElementById('editForm').action = '/maintenance/' + id;
-    document.getElementById('edit-title').value = title;
-    document.getElementById('edit-description').value = description;
     document.getElementById('edit-priority').value = priority;
     document.getElementById('edit-status').value = status;
     document.getElementById('edit-cost').value = cost > 0 ? cost : '';

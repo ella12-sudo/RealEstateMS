@@ -77,22 +77,17 @@ class MaintenanceController extends Controller
         }
     }
 
-   public function update(Request $request, $id)
+   public function update(Request $request, MaintenanceRequest $maintenance)
 {
-    $maintenance = Maintenance::findOrFail($id);
+    $validated = $request->validate([
+        'priority' => 'required|in:Low,Medium,High,Emergency',
+        'status'   => 'required|in:Pending,In Progress,Completed',
+        'cost'     => 'nullable|numeric|min:0',
+    ]);
 
-    $maintenance->title       = $request->title;
-    $maintenance->description = $request->description;
-    $maintenance->priority    = $request->priority;
-    $maintenance->status      = $request->status;
+    $maintenance->update($validated);
 
-    if ($request->status === 'Completed' && $request->filled('cost')) {
-        $maintenance->cost = $request->cost;
-    }
-
-    $maintenance->save();
-
-    return redirect()->route('maintenance.index')->with('success', 'Maintenance request updated successfully.');
+    return back()->with('success', 'Maintenance request updated successfully.');
 }
     // ADDED: Archive a maintenance record
     public function archive($id)
